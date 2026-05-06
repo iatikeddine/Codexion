@@ -6,7 +6,7 @@
 /*   By: iatikedd <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:51:00 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/04/30 11:31:44 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/05/06 14:20:03 by iatikedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,4 +25,25 @@ int	is_valid_number(const char *num)
 		i++;
 	}
 	return 1;
+}
+
+int	is_alpha(char *str)
+{
+	size_t	i = 0;
+
+	if (str[0] == '\0')
+		return 0;
+	while(str[i])
+	{
+		if (!(str[i] >= 'a' && str[i] <= 'z') && !(str[i] >= 'A' && str[i] <= 'Z'))
+			return 0;
+		i++;
+	}
+	return 1;
+}
+
+int main()
+{
+	char *str = "edf";
+	printf("%d\n", is_alpha(str));
 }

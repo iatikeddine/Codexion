@@ -6,14 +6,14 @@
 /*   By: iatikedd <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:51:10 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/05/03 11:41:26 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/05/06 11:47:11 by iatikedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
 // returns an array of input numbers
-static int	fill_input_data(t_arguments * data, int argc, char **argv){
+static int	fill_input_data(t_arguments *data, char **argv){
 	data->number_of_coders = atoi(argv[1]);
 	data->time_to_burnout = atoi(argv[2]);
 	data->time_to_compile = atoi(argv[3]);
@@ -45,6 +45,6 @@ int	main(int argc, char **argv){
 		}
 		i++;
 	}
-	fill_input_data(&input_data, argc, argv);
+	fill_input_data(&input_data, argv);
 	printf("%c\n", input_data.scheduler);
 }
