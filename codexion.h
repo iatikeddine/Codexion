@@ -6,7 +6,7 @@
 /*   By: iatikedd <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:18:47 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/05/03 11:34:07 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/05/07 11:48:06 by iatikedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 # include <string.h>
 
 int	is_valid_number(const char *str);
+int     is_all_alpha(const char *str);
+void    to_lower(char *str);
+int	str_trim(char **ptr);
 
 typedef struct	s_arguments{
 	size_t	number_of_coders;

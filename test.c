@@ -3,33 +3,39 @@
 #include <pthread.h>
 #include <unistd.h>
 
+size_t	test = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void	*my_turn(void *arg){
-	int *v = (int *)arg;
-	int i = 0;
-	while(i < 8){
-		sleep(1);
-		printf("My turn %d %d\n", i, *v);
+void	*say_hello()
+{
+	size_t	i = 0;
+	while(i < 1000000)
+	{
+		pthread_mutex_lock(&mutex);
+		test++;
 		i++;
-		(*v)++;
+		pthread_mutex_unlock(&mutex);
 	}
 	return NULL;
 }
 
-void	your_turn(){
-	int i = 0;
-	while(i < 5){
-		sleep(1);
-		printf("your turn %d\n", i);
+int main()
+{
+	pthread_t th[5];
+
+	int	i = 0;
+	while (i < 5)
+	{
+		if (pthread_create(th + i, NULL, &say_hello, NULL) != 0)
+			return 1;
 		i++;
 	}
-}
-
-int main(){
-	pthread_t t1;
-	printf("%lu\n", t1);
-	int v = 0;
-	pthread_create(&t1, NULL, my_turn, &v);
-	your_turn();
-	pthread_join(t1, NULL);
+	i = 0;
+	while (i < 5)
+	{
+		if (pthread_join(th[i], NULL) != 0)
+			return 2;
+		i++;
+	}
+	printf("%lu", test);
 }
