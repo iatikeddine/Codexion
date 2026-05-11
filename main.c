@@ -6,7 +6,7 @@
 /*   By: iatikedd <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:51:10 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/05/07 12:13:55 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/05/11 11:41:46 by iatikedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,5 @@ int	main(int argc, char **argv){
 	}
 	if (fill_input_data(&input_data, argv) == 0)
 		return 5;
+	printf("%lu", input_data.number_of_coders);
 }

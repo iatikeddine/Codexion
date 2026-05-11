@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: iatikedd <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/30 10:18:47 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/05/07 11:48:06 by iatikedd         ###   ########.fr       */
+/*   Created: 2026/05/11 11:33:12 by iatikedd          #+#    #+#             */
+/*   Updated: 2026/05/11 11:33:27 by iatikedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int     is_all_alpha(const char *str);
 void    to_lower(char *str);
 int	str_trim(char **ptr);
 
+
 typedef struct	s_arguments{
 	size_t	number_of_coders;
 	size_t	number_of_compiles_required;
@@ -39,3 +40,4 @@ typedef struct	s_arguments{
 }t_arguments;
 
 #endif
+
