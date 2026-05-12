@@ -24,7 +24,12 @@ int	is_valid_number(const char *num)
 	while (num[i] != '\0')
 	{
 		if (num[i] < '0' || num[i] > '9')
+		{
+			fprintf(stderr, "Error: The argument %s is not valid", num);
 			return 0;
+		}
+		else if (num[i] >= '0' && num[i] <= '9') // validates '   17%dshvf' = 17
+			return 1;
 		i++;
 	}
 	return 1;
@@ -32,14 +37,17 @@ int	is_valid_number(const char *num)
 
 int	is_all_alpha(const char *str)
 {
-	size_t	i = 0;
+	int	i = 0;
 
 	if (str[0] == '\0')
 		return 0;
 	while(str[i])
 	{
 		if (!(str[i] >= 'a' && str[i] <= 'z') && !(str[i] >= 'A' && str[i] <= 'Z'))
+		{
+			fprintf(stderr, "Error: invalid scheduler\n");
 			return 0;
+		}
 		i++;
 	}
 	return 1;
@@ -63,18 +71,18 @@ int	str_trim(char **ptr)
 	int	i;
 	size_t	len;
 
+	i = 0;
 	if ((*ptr)[0] == '\0')
 		return 0;
-	i = 0;
 	while ((*ptr)[i] == ' ' || ((*ptr)[i] >= 9 && (*ptr)[i] <= 13))
 		i++;
 	if ((*ptr)[i] == '\0')
 		return 0;
-	*ptr += i;
+	*ptr += i; // pointer shift
 
 	len = strlen(*ptr);
 	while (len > 0 && ((*ptr)[len - 1] == ' ' || ((*ptr)[len - 1] >= 9 && (*ptr)[len - 1] <= 13)))
 		len--;
-	(*ptr)[len] = '\0';
+	(*ptr)[len] = '\0'; // start from the end and put \0 in last white space
 	return 1;
 }

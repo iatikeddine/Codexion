@@ -19,25 +19,54 @@
 # include <pthread.h>
 # include <sys/time.h>
 # include <string.h>
+# include <limits.h>
 
-int	is_valid_number(const char *str);
-int     is_all_alpha(const char *str);
-void    to_lower(char *str);
-int	str_trim(char **ptr);
+typedef struct s_dongle	t_dongle;
+typedef struct s_coder	t_coder;
 
-
+// Represents all data needed for simulation and accessed by all coders
 typedef struct	s_arguments{
-	size_t	number_of_coders;
-	size_t	number_of_compiles_required;
-
-	size_t	time_to_burnout;
-	size_t	time_to_compile;
-	size_t	time_to_debug;
-	size_t	time_to_refactor;
-	size_t	dongle_cooldown;
+	int	number_of_coders;
+	long	number_of_compiles_required;
+	long	time_to_burnout;
+	long	time_to_compile;
+	long	time_to_debug;
+	long	time_to_refactor;
+	long	dongle_cooldown;
 	char	scheduler;
 
-}t_arguments;
+	long	starting_point;
+	int	ending_point; // 1 or 0
+	t_dongle	*dongles;
+	t_coder	*coders;
+
+}	t_arguments;
+
+// Represents each individual coder infos
+typedef struct s_coder
+{
+	int	coder_id;
+	int	number_of_compiles;
+	int	last_compile_time;
+	t_dongle	*left_dongle;
+	t_dongle	*right_dongle;
+	pthread_t	coder_thread;
+	t_arguments	*ags;
+}	t_coder;
+
+// Represents a single dongle simply a mutex with ID
+typedef struct s_dongle
+{
+	int	dongle_id;
+	pthread_mutex_t	dongle;
+}	t_dongle;
+
+int	is_valid_number(const char *str);
+int	is_all_alpha(const char *str);
+int	str_trim(char **ptr);
+int fill_input_data(t_arguments *args, char **argv);
+int	parse_args(int argc, char **argv, t_arguments *args);
+void    to_lower(char *str);
 
 #endif
 
