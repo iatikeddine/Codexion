@@ -36,7 +36,7 @@ typedef struct	s_arguments{
 	char	scheduler;
 
 	long	starting_point;
-	int	ending_point; // 1 or 0
+	char	ending_point; // t or f
 	t_dongle	*dongles;
 	t_coder	*coders;
 
