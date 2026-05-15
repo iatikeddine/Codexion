@@ -47,7 +47,7 @@ static long  ft_atol(const char *str)
         digit = str[i] - '0';
         if (result > (LONG_MAX - digit) / 10)
             return -1;
-        result = result * 10 + (str[i] - '0');
+        result = result * 10 + digit;
         i++;
     }
     return result;

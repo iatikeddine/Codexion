@@ -60,9 +60,11 @@ int sim_init(t_arguments *args)
 
     i = 0;
     args->ending_point = 'f';
+
     args->coders = (t_coder *)(allocate_mem(sizeof(t_coder) * args->number_of_coders));
     if (args->coders == NULL)
         return 0; // must follow return value and exit
+
     args->dongles = (t_dongle *)(allocate_mem(sizeof(t_dongle) * args->number_of_coders));
     if (args->dongles == NULL)
         return 0; // must follow return value and exit

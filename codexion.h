@@ -35,8 +35,8 @@ typedef struct	s_arguments{
 	long	dongle_cooldown;
 	char	scheduler;
 
-	long	starting_point;
-	char	ending_point; // t or f
+	long	starting_time; //time
+	char	ending_point; // bool t or f sim ended or no
 	t_dongle	*dongles;
 	t_coder	*coders;
 
