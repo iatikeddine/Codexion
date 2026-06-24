@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+#include "../inc/codexion.h"
 
 static int  remove_white_space(int argc, char **argv)
 {

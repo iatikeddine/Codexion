@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+#include "../inc/codexion.h"
 
 int	is_valid_number(const char *num)
 {
@@ -28,8 +28,6 @@ int	is_valid_number(const char *num)
 			fprintf(stderr, "Error: The argument %s is not valid", num);
 			return 0;
 		}
-		else if (num[i] >= '0' && num[i] <= '9') // validates '   17%dshvf' = 17
-			return 1;
 		i++;
 	}
 	return 1;

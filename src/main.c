@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+#include "../inc/codexion.h"
 
 int	main(int argc, char **argv){
 
@@ -27,4 +27,13 @@ int	main(int argc, char **argv){
 	}
 	if (fill_input_data(&args, argv) == 0)
 		return 3; // needs error message
+	if (sim_init(&args) == 0)
+		return 4;
+
+	int	i = 0;
+	while(i < args.number_of_coders)
+	{
+		printf("coder id: %d\n%d and %d\n\n", args.coders[i].coder_id, args.coders[i].left_dongle->dongle_id ,args.coders[i].right_dongle->dongle_id);
+		i++;
+	}
 }

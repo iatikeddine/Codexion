@@ -10,38 +10,55 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "codexion.h"
+#include "../inc/codexion.h"
 
-void    coder_init(t_arguments *args)
+static void    coders_init(t_arguments *args)
 {
     int i;
 
     i = 0;
     while (i < args->number_of_coders)
     {
-        args->coders[i].coder_id = i;
+        args->coders[i].coder_id = i + 1;
         args->coders[i].number_of_compiles = 0;
-        args->coders[i].ags = args;
+        args->coders[i].args = args;
         if (i == 0)
         {
             int last_dongle;
 
             last_dongle = args->number_of_coders - 1;
-            args->coders[i].left_dongle = &args->dongles[i + last_dongle].dongle;
-            args->coders[i].right_dongle = &args->dongles[i].dongle;
+            args->coders[i].left_dongle = &args->dongles[last_dongle];
+            args->coders[i].right_dongle = &args->dongles[i];
             i++;
         }
         else if (i != 0)
         {
-            args->coders[i].left_dongle = &args->dongles[i - 1].dongle;
-            args->coders[i].right_dongle = &args->dongles[i].dongle;
+            args->coders[i].left_dongle = &args->dongles[i - 1];
+            args->coders[i].right_dongle = &args->dongles[i];
             i++;
         }
     }
 
 }
 
-void    *allocate_mem(size_t size)
+static void    dongles_init(t_arguments *args)
+{
+    int i;
+
+    i = 0;
+    while (i < args->number_of_coders)
+    {
+        args->dongles[i].dongle_id = i + 1;
+        args->dongles[i].is_available = 1;
+        args->dongles[i].cooldown = 0;
+        args->dongles[i].queue.current_size = 0;
+        pthread_mutex_init(&args->dongles[i].lock, NULL);
+        pthread_cond_init(&args->dongles[i].wait_cond, NULL);
+        i++;
+    }
+}
+
+static void    *allocate_mem(size_t size)
 {
     void    *mem;
 
@@ -67,12 +84,14 @@ int sim_init(t_arguments *args)
 
     args->dongles = (t_dongle *)(allocate_mem(sizeof(t_dongle) * args->number_of_coders));
     if (args->dongles == NULL)
-        return 0; // must follow return value and exit
-
-    while (i < args->number_of_coders)
     {
-        pthread_mutex_init(&args->dongles[i].dongle, NULL);
-        args->dongles[i].dongle_id = i;
-        i++;
+        free(args->coders);
+        return 0; // must follow return value and exit
     }
+
+    pthread_mutex_init(&args->print_lock, NULL);
+    pthread_mutex_init(&args->state_lock, NULL);
+    dongles_init(args);
+    coders_init(args);
+    return 1;
 }
