@@ -87,5 +87,7 @@ int fill_input_data(t_arguments *args, char **argv);
 int	parse_args(int argc, char **argv, t_arguments *args);
 int sim_init(t_arguments *args);
 void    to_lower(char *str);
+void    push_request(t_heap *queue, t_request req, char scheduler_type);
+void    pop_request(t_heap *queue);
 
 #endif

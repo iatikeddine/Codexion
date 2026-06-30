@@ -33,7 +33,9 @@ int	main(int argc, char **argv){
 	int	i = 0;
 	while(i < args.number_of_coders)
 	{
-		printf("coder id: %d\n%d and %d\n\n", args.coders[i].coder_id, args.coders[i].left_dongle->dongle_id ,args.coders[i].right_dongle->dongle_id);
+		printf("coder id: %d\n%d and %d\n\n",
+			args.coders[i].coder_id, args.coders[i].left_dongle->dongle_id,
+			args.coders[i].right_dongle->dongle_id);
 		i++;
 	}
 }
