@@ -15,6 +15,7 @@
 int	main(int argc, char **argv){
 
 	t_arguments args;
+	int	i;
 
 	if (argc == 9){
 		if (parse_args(argc, argv, &args) == 0)
@@ -30,12 +31,24 @@ int	main(int argc, char **argv){
 	if (sim_init(&args) == 0)
 		return 4;
 
-	int	i = 0;
-	while(i < args.number_of_coders)
+	args.starting_time = get_current_time() + 50;
+	pthread_t monitor;
+
+	pthread_create(&monitor, NULL, routine_monitoring, &args);
+
+	pthread_t coder[args.number_of_coders];
+	i = 0;
+	while (i < args.number_of_coders)
 	{
-		printf("coder id: %d\n%d and %d\n\n",
-			args.coders[i].coder_id, args.coders[i].left_dongle->dongle_id,
-			args.coders[i].right_dongle->dongle_id);
+		pthread_create(&coder[i], NULL, routine, &args.coders[i]);
 		i++;
 	}
+
+	i = 0;
+	while (i < args.number_of_coders)
+	{
+		pthread_join(coder[i], NULL);
+		i++;
+	}
+	pthread_join(monitor, NULL);
 }

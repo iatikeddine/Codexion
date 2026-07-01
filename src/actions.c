@@ -30,6 +30,7 @@ void    take_dongle(t_dongle *dongle, t_coder *coder)
         pthread_cond_wait(&dongle->wait_cond, &dongle->lock);
     
     pop_request(&dongle->queue);
+    print_status("has taken dongle", coder);
     dongle->is_available = 0;
     pthread_mutex_unlock(&dongle->lock);
 }

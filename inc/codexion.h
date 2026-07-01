@@ -49,10 +49,10 @@ typedef struct s_coder
 	int	coder_id;
 	long	number_of_compiles;
 	long	last_compile_time;
-	pthread_t	coder_thread;
 	t_dongle	*left_dongle;
 	t_dongle	*right_dongle;
 	t_arguments	*args;
+	pthread_t	coder_thread;
 }	t_coder;
 
 typedef struct s_request
@@ -86,8 +86,14 @@ int	str_trim(char **ptr);
 int fill_input_data(t_arguments *args, char **argv);
 int	parse_args(int argc, char **argv, t_arguments *args);
 int sim_init(t_arguments *args);
+long    get_current_time();
 void    to_lower(char *str);
 void    push_request(t_heap *queue, t_request req, char scheduler_type);
+void    take_dongle(t_dongle *dongle, t_coder *coder);
+void    drop_dongle(t_dongle *dongle, long cooldown_duration);
 void    pop_request(t_heap *queue);
+void    print_status(char *str, t_coder *coder);
+void    *routine(void *arg);
+void    *routine_monitoring(void *arg);
 
 #endif
