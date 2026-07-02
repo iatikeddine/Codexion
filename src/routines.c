@@ -30,11 +30,10 @@ static void    compiling(t_coder *coder)
 
     // number of compiles is also insidethe lock cause we chak it in check simulation
     pthread_mutex_lock(&coder->args->state_lock);
+    coder->last_compile_time = get_current_time();
     usleep(coder->args->time_to_compile * 1000);
     coder->number_of_compiles++;
-    coder->last_compile_time = get_current_time();
     pthread_mutex_unlock(&coder->args->state_lock);
-
     drop_dongle(coder->left_dongle, coder->args->dongle_cooldown);
     drop_dongle(coder->right_dongle, coder->args->dongle_cooldown);
 }

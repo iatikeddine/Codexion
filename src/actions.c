@@ -30,13 +30,9 @@ void    take_dongle(t_dongle *dongle, t_coder *coder)
 
 void    drop_dongle(t_dongle *dongle, long cooldown_duration)
 {
-    long current_time;
-
-    current_time = get_current_time();
-
     pthread_mutex_lock(&dongle->lock);
     dongle->is_available = 1;
-    dongle->cooldown = current_time + cooldown_duration;
+    dongle->cooldown = get_current_time() + cooldown_duration;
     pthread_cond_broadcast(&dongle->wait_cond);
     pthread_mutex_unlock(&dongle->lock);
 }
