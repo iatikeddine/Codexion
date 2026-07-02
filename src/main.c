@@ -12,36 +12,12 @@
 
 #include "../inc/codexion.h"
 
-void	destroy_mutexes(t_arguments *args)
+int	main(int argc, char **argv)
 {
-	int	i;
-
-	pthread_mutex_destroy(&args->print_lock);
-	pthread_mutex_destroy(&args->state_lock);
-
-	i = 0;
-	while (i < args->number_of_coders)
-	{
-		pthread_mutex_destroy(&args->dongles[i].lock);
-		pthread_cond_destroy(&args->dongles[i].wait_cond);
-		i++;
-	}
-}
-
-void	free_all(t_arguments *args)
-{
-	if (args->coders)
-		free(args->coders);
-	if (args->dongles)
-		free(args->dongles);
-}
-
-int	main(int argc, char **argv){
-
 	t_arguments args;
-	int	i;
 
-	if (argc == 9){
+	if (argc == 9)
+	{
 		if (parse_args(argc, argv) == 0)
 			return 1;
 	}
@@ -53,29 +29,15 @@ int	main(int argc, char **argv){
 	if (fill_input_data(&args, argv) == 0)
 		return 3; // needs error message
 	if (sim_init(&args) == 0)
+	{	
+		free_all(&args);
 		return 4;
-
-	args.starting_time = get_current_time() + 100;
-
-	// initializing the coders threads
-	i = 0;
-	while (i < args.number_of_coders)
-	{
-		args.coders[i].last_compile_time = args.starting_time;
-		pthread_create(&args.coders[i].coder_thread, NULL, routine, &args.coders[i]);
-		i++;
 	}
-
+	args.starting_time = get_current_time();
+	threads_init(&args);
 	pthread_t monitor;
 	pthread_create(&monitor, NULL, routine_monitoring, &args);
-
-	// joining the coders threads
-	i = 0;
-	while (i < args.number_of_coders)
-	{
-		pthread_join(args.coders[i].coder_thread, NULL);
-		i++;
-	}
+	join_threads(&args);
 	pthread_join(monitor, NULL);
 	free_all(&args);
 }

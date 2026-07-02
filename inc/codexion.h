@@ -95,5 +95,9 @@ void    pop_request(t_heap *queue);
 void    print_status(char *str, t_coder *coder);
 void    *routine(void *arg);
 void    *routine_monitoring(void *arg);
+void	destroy_mutexes(t_arguments *args);
+void	threads_init(t_arguments *args);
+void join_threads(t_arguments *args);
+void	free_all(t_arguments *args);
 
 #endif

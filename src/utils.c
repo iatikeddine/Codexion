@@ -31,3 +31,44 @@ long    get_current_time()
 
     return current_time;
 }
+
+void	destroy_mutexes(t_arguments *args)
+{
+	int	i;
+
+	pthread_mutex_destroy(&args->print_lock);
+	pthread_mutex_destroy(&args->state_lock);
+
+	i = 0;
+	while (i < args->number_of_coders)
+	{
+		pthread_mutex_destroy(&args->dongles[i].lock);
+		pthread_cond_destroy(&args->dongles[i].wait_cond);
+		i++;
+	}
+}
+
+void	threads_init(t_arguments *args)
+{
+	int	i;
+
+	i = 0;
+	while (i < args->number_of_coders)
+	{
+		args->coders[i].last_compile_time = args->starting_time;
+		pthread_create(&args->coders[i].coder_thread, NULL, routine, &args->coders[i]);
+		i++;
+	}
+}
+
+void join_threads(t_arguments *args)
+{
+	int	i;
+
+	i = 0;
+	while (i < args->number_of_coders)
+	{
+		pthread_join(args->coders[i].coder_thread, NULL);
+		i++;
+	}
+}
