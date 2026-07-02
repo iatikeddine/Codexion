@@ -32,11 +32,21 @@ int	main(int argc, char **argv){
 		return 4;
 
 	args.starting_time = get_current_time() + 50;
-	pthread_t monitor;
 
+	// init the coders last compile time
+	i = 0;
+	while (i < args.number_of_coders)
+	{
+		args.coders[i].last_compile_time = args.starting_time;
+		i++;
+	}
+
+	pthread_t monitor;
 	pthread_create(&monitor, NULL, routine_monitoring, &args);
 
 	pthread_t coder[args.number_of_coders];
+
+	// initializing the coders threads
 	i = 0;
 	while (i < args.number_of_coders)
 	{
@@ -44,6 +54,7 @@ int	main(int argc, char **argv){
 		i++;
 	}
 
+	// joining the coders threads
 	i = 0;
 	while (i < args.number_of_coders)
 	{
