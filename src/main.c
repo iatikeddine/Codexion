@@ -55,8 +55,6 @@ int	main(int argc, char **argv){
 	if (sim_init(&args) == 0)
 		return 4;
 
-	pthread_t coder[args.number_of_coders];
-
 	args.starting_time = get_current_time() + 100;
 
 	// initializing the coders threads
@@ -64,7 +62,7 @@ int	main(int argc, char **argv){
 	while (i < args.number_of_coders)
 	{
 		args.coders[i].last_compile_time = args.starting_time;
-		pthread_create(&coder[i], NULL, routine, &args.coders[i]);
+		pthread_create(&args.coders[i].coder_thread, NULL, routine, &args.coders[i]);
 		i++;
 	}
 
@@ -75,7 +73,7 @@ int	main(int argc, char **argv){
 	i = 0;
 	while (i < args.number_of_coders)
 	{
-		pthread_join(coder[i], NULL);
+		pthread_join(args.coders[i].coder_thread, NULL);
 		i++;
 	}
 	pthread_join(monitor, NULL);
