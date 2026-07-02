@@ -31,9 +31,9 @@ void	destroy_mutexes(t_arguments *args)
 void	free_all(t_arguments *args)
 {
 	if (args->coders)
-		free(coders);
+		free(args->coders);
 	if (args->dongles)
-		free(dongles);
+		free(args->dongles);
 }
 
 int	main(int argc, char **argv){
