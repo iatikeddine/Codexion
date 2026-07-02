@@ -73,9 +73,6 @@ static void    *allocate_mem(size_t size)
 
 int sim_init(t_arguments *args)
 {
-    int i;
-
-    i = 0;
     args->ending_point = 'f';
 
     args->coders = (t_coder *)(allocate_mem(sizeof(t_coder) * args->number_of_coders));
