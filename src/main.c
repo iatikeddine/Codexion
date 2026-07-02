@@ -18,7 +18,7 @@ int	main(int argc, char **argv){
 	int	i;
 
 	if (argc == 9){
-		if (parse_args(argc, argv, &args) == 0)
+		if (parse_args(argc, argv) == 0)
 			return 1;
 	}
 	else

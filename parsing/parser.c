@@ -81,7 +81,7 @@ int fill_input_data(t_arguments *args, char **argv)
 	return 1;
 }
 
-int	parse_args(int argc, char **argv, t_arguments *args)
+int	parse_args(int argc, char **argv)
 {
 	int	i;
 

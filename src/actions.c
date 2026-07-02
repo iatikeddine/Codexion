@@ -15,7 +15,6 @@ void    take_dongle(t_dongle *dongle, t_coder *coder)
 {
     t_request   request;
     long    time_left_to_burnout;
-    long    current_time;
 
     pthread_mutex_lock(&dongle->lock);
 

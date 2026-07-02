@@ -84,7 +84,7 @@ int	is_valid_number(const char *str);
 int	is_all_alpha(const char *str);
 int	str_trim(char **ptr);
 int fill_input_data(t_arguments *args, char **argv);
-int	parse_args(int argc, char **argv, t_arguments *args);
+int	parse_args(int argc, char **argv);
 int sim_init(t_arguments *args);
 long    get_current_time();
 void    to_lower(char *str);
