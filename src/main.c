@@ -77,4 +77,5 @@ int	main(int argc, char **argv){
 		i++;
 	}
 	pthread_join(monitor, NULL);
+	free_all(&args);
 }
