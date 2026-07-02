@@ -30,17 +30,10 @@ void	destroy_mutexes(t_arguments *args)
 
 void	free_all(t_arguments *args)
 {
-	int	i;
-
-	i = 0;
-	while (i < args->number_of_coders)
-	{
-		free(&args->coders[i]);
-		free(&args->dongles[i]);
-		i++;
-	}
-	free(args->coders);
-	free(args->dongles);
+	if (args->coders)
+		free(args->coders);
+	if (args->dongles)
+		free(args->dongles);
 }
 
 int	main(int argc, char **argv){
@@ -70,7 +63,7 @@ int	main(int argc, char **argv){
 	i = 0;
 	while (i < args.number_of_coders)
 	{
-		args.coders[i].last_compile_time = get_current_time();
+		args.coders[i].last_compile_time = args.starting_time;
 		pthread_create(&coder[i], NULL, routine, &args.coders[i]);
 		i++;
 	}

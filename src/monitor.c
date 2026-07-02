@@ -9,9 +9,6 @@ void    *routine_monitoring(void *arg)
     t_coder *coder;
 
     args = (t_arguments *)arg;
-
-    while (get_current_time() < args->starting_time)
-        usleep(100);
     
     while (1)
     {

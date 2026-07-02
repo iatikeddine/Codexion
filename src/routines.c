@@ -56,8 +56,7 @@ void    *routine(void *arg)
     t_coder *coder;
 
     coder = (t_coder *)arg;
-    while (get_current_time() < coder->args->starting_time)
-        usleep(100);
+
     while(check_simulation(coder) == 0)
     {
         compiling(coder);
