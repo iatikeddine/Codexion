@@ -23,17 +23,24 @@ void	destroy_mutexes(t_arguments *args)
 	while (i < args->number_of_coders)
 	{
 		pthread_mutex_destroy(&args->dongles[i].lock);
-		pthread_cond_destroy(&args->dongles[i].wait_cond);
+		pthread_cond_destroy(&args->wait_cond);
 		i++;
 	}
 }
 
 void	free_all(t_arguments *args)
 {
-	if (args->coders)
-		free(args->coders);
-	if (args->dongles)
-		free(args->dongles);
+	int	i;
+
+	i = 0;
+	while (i < args->number_of_coders)
+	{
+		free(args->coders[i]);
+		free(args->dongles[i]);
+		i++;
+	}
+	free(args->coders);
+	free(args->dongles);
 }
 
 int	main(int argc, char **argv){
