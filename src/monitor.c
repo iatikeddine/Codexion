@@ -55,6 +55,6 @@ void    *routine_monitoring(void *arg)
             pthread_mutex_unlock(&args->state_lock);
             return NULL;
         }
-        usleep(100);
+        usleep(1000);
     }
 }

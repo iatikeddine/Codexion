@@ -20,3 +20,14 @@ void    print_status(char *str, t_coder *coder)
 
     pthread_mutex_unlock(&coder->args->print_lock);
 }
+
+long    get_current_time()
+{
+    long    current_time;
+    struct timeval  timevalue;
+
+    gettimeofday(&timevalue, NULL);
+    current_time = (timevalue.tv_sec * 1000) + (timevalue.tv_usec / 1000);
+
+    return current_time;
+}

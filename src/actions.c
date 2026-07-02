@@ -1,16 +1,5 @@
 # include "../inc/codexion.h"
 
-long    get_current_time()
-{
-    long    current_time;
-    struct timeval  timevalue;
-
-    gettimeofday(&timevalue, NULL);
-    current_time = (timevalue.tv_sec * 1000) + (timevalue.tv_usec / 1000);
-
-    return current_time;
-}
-
 void    take_dongle(t_dongle *dongle, t_coder *coder)
 {
     t_request   request;
