@@ -5,7 +5,7 @@ static void    fifo_policy(t_heap *queue)
     if (queue->requests[1].arrival_time < queue->requests[0].arrival_time)
     {
         printf("hello");
-        usleep(10000)
+        usleep(10000);
         t_request temp;
         temp = queue->requests[0];
         queue->requests[0] = queue->requests[1];
