@@ -43,7 +43,6 @@ typedef struct	s_arguments{
 
 }	t_arguments;
 
-
 typedef struct s_coder
 {
 	int	coder_id;
@@ -68,7 +67,6 @@ typedef struct s_heap
 	int	current_size;
 }	t_heap;
 
-
 typedef struct s_dongle
 {
 	int	dongle_id;
@@ -78,7 +76,6 @@ typedef struct s_dongle
 	pthread_mutex_t	lock;
 	pthread_cond_t	wait_cond;
 }	t_dongle;
-
 
 int	is_valid_number(const char *str);
 int	is_all_alpha(const char *str);

@@ -38,7 +38,6 @@ static void    coders_init(t_arguments *args)
             i++;
         }
     }
-
 }
 
 static void    dongles_init(t_arguments *args)

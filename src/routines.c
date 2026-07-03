@@ -15,7 +15,6 @@ static int check_simulation(t_coder *coder)
 
 static void    compiling(t_coder *coder)
 {
-
     if (coder->coder_id % 2 == 0)
     {
         take_dongle(coder->right_dongle, coder);
@@ -61,6 +60,6 @@ void    *routine(void *arg)
         debugging(coder);
         refactoring(coder);
     }
-    
+
     return NULL;
 }

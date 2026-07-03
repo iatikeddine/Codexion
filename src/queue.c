@@ -26,7 +26,6 @@ static void    edf_policy(t_heap *queue)
 
 void    push_request(t_heap *queue, t_request req, char scheduler_type)
 {
-
     if (queue->current_size == 0)
     {
         queue->requests[0] = req;
@@ -43,7 +42,6 @@ void    push_request(t_heap *queue, t_request req, char scheduler_type)
         else if (scheduler_type == 'E')
             edf_policy(queue);
     }
-    
 }
 
 void    pop_request(t_heap *queue)

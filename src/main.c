@@ -29,7 +29,7 @@ int	main(int argc, char **argv)
 	if (fill_input_data(&args, argv) == 0)
 		return 3; // needs error message
 	if (sim_init(&args) == 0)
-	{	
+	{
 		free_all(&args);
 		return 4;
 	}
