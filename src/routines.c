@@ -15,7 +15,7 @@ static int check_simulation(t_coder *coder)
 
 static void    compiling(t_coder *coder)
 {
-    if (coder->coder_id == 1)
+    if (coder->coder_id % 2 == 0)
     {
         take_dongle(coder->right_dongle, coder);
         take_dongle(coder->left_dongle, coder);
@@ -55,7 +55,7 @@ void    *routine(void *arg)
     t_coder *coder;
 
     coder = (t_coder *)arg;
-
+	coder->last_compile_time = get_current_time();	
     while(check_simulation(coder) == 0)
     {
         compiling(coder);
