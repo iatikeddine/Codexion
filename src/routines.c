@@ -15,6 +15,7 @@ static int check_simulation(t_coder *coder)
 
 static void    compiling(t_coder *coder)
 {
+
     if (coder->coder_id % 2 == 0)
     {
         take_dongle(coder->right_dongle, coder);
@@ -28,12 +29,11 @@ static void    compiling(t_coder *coder)
 
     print_status("is compiling", coder);
 
-    // number of compiles is also insidethe lock cause we chak it in check simulation
     pthread_mutex_lock(&coder->args->state_lock);
     coder->last_compile_time = get_current_time();
-    usleep(coder->args->time_to_compile * 1000);
     coder->number_of_compiles++;
     pthread_mutex_unlock(&coder->args->state_lock);
+    usleep(coder->args->time_to_compile * 1000);
     drop_dongle(coder->left_dongle, coder->args->dongle_cooldown);
     drop_dongle(coder->right_dongle, coder->args->dongle_cooldown);
 }
@@ -55,7 +55,6 @@ void    *routine(void *arg)
     t_coder *coder;
 
     coder = (t_coder *)arg;
-	coder->last_compile_time = get_current_time();	
     while(check_simulation(coder) == 0)
     {
         compiling(coder);

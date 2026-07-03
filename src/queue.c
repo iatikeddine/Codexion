@@ -37,10 +37,10 @@ void    push_request(t_heap *queue, t_request req, char scheduler_type)
         queue->requests[1] = req;
         queue->current_size += 1;
     
-        if (scheduler_type == 'f')
+        if (scheduler_type == 'F')
             fifo_policy(queue);
 
-        else if (scheduler_type == 'e')
+        else if (scheduler_type == 'E')
             edf_policy(queue);
     }
     
