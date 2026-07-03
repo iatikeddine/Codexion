@@ -21,9 +21,9 @@ void    take_dongle(t_dongle *dongle, t_coder *coder)
     current_time = get_current_time();
     if (current_time < dongle->cooldown)
     {
-        pthread_mutex_unlock(&dongle->lock);
+        //pthread_mutex_unlock(&dongle->lock);
         usleep((dongle->cooldown - current_time) * 1000);
-        pthread_mutex_lock(&dongle->lock);
+        //pthread_mutex_lock(&dongle->lock);
     }
 
     pop_request(&dongle->queue);
