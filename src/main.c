@@ -44,5 +44,6 @@ int	main(int argc, char **argv)
 	pthread_create(&monitor, NULL, routine_monitoring, &args);
 	join_threads(&args);
 	pthread_join(monitor, NULL);
+	destroy_mutexes(&args)
 	free_all(&args);
 }
