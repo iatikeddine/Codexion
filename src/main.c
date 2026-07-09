@@ -28,7 +28,7 @@ int	main(int argc, char **argv)
 	}
 	if (fill_input_data(&args, argv) == 0)
 		return 3;
-	if (args.number_of_coders == 1)
+	if (args.number_of_coders < 2)
 	{
 		fprintf(stderr, "Error: Invalid number of coders\n");
 		return 4;
