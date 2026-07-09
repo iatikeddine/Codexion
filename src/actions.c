@@ -23,7 +23,7 @@ void    take_dongle(t_dongle *dongle, t_coder *coder)
         usleep((dongle->cooldown - current_time) * 1000);
 
     pop_request(&dongle->queue);
-    print_status("has taken dongle", coder);
+    print_status("has taken a dongle", coder);
     dongle->is_available = 0;
     pthread_mutex_unlock(&dongle->lock);
 }

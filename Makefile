@@ -1,0 +1,29 @@
+NAME = codexion
+
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -pthread
+INC = -I inc
+
+SRCS = src/main.c src/init.c src/routines.c src/actions.c \
+       src/monitor.c src/queue.c src/utils.c src/utils_2.c \
+       parsing/parser.c parsing/utils.c
+
+OBJS = $(SRCS:.c=.o)
+
+all: $(NAME)
+
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+clean:
+	rm -f $(OBJS)
+
+fclean: clean
+	rm -f $(NAME)
+
+re: fclean all
+
+.PHONY: all clean fclean re

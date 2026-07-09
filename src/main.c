@@ -27,11 +27,16 @@ int	main(int argc, char **argv)
 		return 2;
 	}
 	if (fill_input_data(&args, argv) == 0)
-		return 3; // needs error message
+		return 3;
+	if (args.number_of_coders == 1)
+	{
+		fprintf(stderr, "Error: Invalid number of coders\n");
+		return 4;
+	}
 	if (sim_init(&args) == 0)
 	{
 		free_all(&args);
-		return 4;
+		return 5;
 	}
 	args.starting_time = get_current_time();
 	threads_init(&args);
