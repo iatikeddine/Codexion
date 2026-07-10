@@ -57,7 +57,11 @@ void    *routine(void *arg)
     while(check_simulation(coder) == 0)
     {
         compiling(coder);
+        if (check_simulation(coder) == 1)
+            return NULL;
         debugging(coder);
+        if (check_simulation(coder) == 1)
+            return NULL;
         refactoring(coder);
     }
 
