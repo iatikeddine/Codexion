@@ -4,7 +4,6 @@ void    take_dongle(t_dongle *dongle, t_coder *coder)
 {
     t_request   request;
     long    time_to_burnout;
-    long    current_time;
 
     pthread_mutex_lock(&dongle->lock);
     pthread_mutex_lock(&coder->args->state_lock);
@@ -16,13 +15,19 @@ void    take_dongle(t_dongle *dongle, t_coder *coder)
 
     push_request(&dongle->queue, request, coder->args->scheduler);
 
-    while (dongle->is_available == 0 || dongle->queue.requests[0].coder != coder)
-        pthread_cond_wait(&dongle->wait_cond, &dongle->lock);
-
-    current_time = get_current_time();
-    if (current_time < dongle->cooldown)
-        usleep((dongle->cooldown - current_time) * 1000);
-
+    while (dongle->is_available == 0 || dongle->queue.requests[0].coder != coder || get_current_time() < dongle->cooldown)
+    {
+        if (dongle->is_available == 1 && dongle->queue.requests[0].coder == coder && get_current_time() < dongle->cooldown)
+        {
+            struct timespec ts;
+            long end = dongle->cooldown;
+            ts.tv_sec  = end / 1000;
+            ts.tv_nsec = (end % 1000) * 1000000;
+            pthread_cond_timedwait(&dongle->wait_cond, &dongle->lock, &ts);
+        }
+        else
+            pthread_cond_wait(&dongle->wait_cond, &dongle->lock);
+    }
     pop_request(&dongle->queue);
     print_status("has taken a dongle", coder);
     dongle->is_available = 0;
