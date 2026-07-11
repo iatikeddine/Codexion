@@ -19,9 +19,8 @@ void    take_dongle(t_dongle *dongle, t_coder *coder)
         if (dongle->is_available == 1 && dongle->queue.requests[0].coder == coder && get_current_time() < dongle->cooldown)
         {
             struct timespec ts;
-            long end = dongle->cooldown;
-            ts.tv_sec  = end / 1000;
-            ts.tv_nsec = (end % 1000) * 1000000;
+            ts.tv_sec  = dongle->cooldown / 1000;
+            ts.tv_nsec = (dongle->cooldown % 1000) * 1000000;
             pthread_cond_timedwait(&dongle->wait_cond, &dongle->lock, &ts);
         }
         else
