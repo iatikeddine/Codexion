@@ -5,6 +5,7 @@ void    *routine_monitoring(void *arg)
     int i;
     int count;
     long    last_compile_time;
+    int compiles_done;
     t_arguments *args;
     t_coder *coder;
 
@@ -19,9 +20,11 @@ void    *routine_monitoring(void *arg)
 
             pthread_mutex_lock(&args->state_lock);
             last_compile_time = coder->last_compile_time;
+            compiles_done = coder->number_of_compiles;
             pthread_mutex_unlock(&args->state_lock);
 
-            if (get_current_time() - last_compile_time >= args->time_to_burnout)
+            if (compiles_done < args->number_of_compiles_required
+                &&get_current_time() - last_compile_time >= args->time_to_burnout)
             {
                 print_status("burned out", coder);
                 pthread_mutex_lock(&args->state_lock);

@@ -7,8 +7,9 @@ void    take_dongle(t_dongle *dongle, t_coder *coder)
     long    current_time;
 
     pthread_mutex_lock(&dongle->lock);
-
+    pthread_mutex_lock(&coder->args->state_lock);
     time_to_burnout = coder->args->time_to_burnout + coder->last_compile_time;
+    pthread_mutex_unlock(&coder->args->state_lock);
     request.time_left_to_burnout = time_to_burnout;
     request.arrival_time = get_current_time();
     request.coder = coder;
