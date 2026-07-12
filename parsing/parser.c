@@ -67,17 +67,15 @@ int fill_input_data(t_arguments *args, char **argv)
         args->time_to_refactor == -1 || args->number_of_compiles_required == -1 ||
         args->dongle_cooldown == -1
     )
-    {
-        fprintf(stderr, "Error: numbers must be lower than LONG_MAX\n");
-        return 0;
-    }
+		return (fprintf(stderr, "Error: numbers must be lower than LONG_MAX\n"), 0);
 
 	if (strcmp(argv[8], "fifo") == 0)
 		args->scheduler = 'F';
 	else if (strcmp(argv[8], "edf") == 0)
 		args->scheduler = 'E';
 	else
-		return 0;
+		return (fprintf(stderr, "Error: invalid scheduler type"), 0);
+
 	return 1;
 }
 

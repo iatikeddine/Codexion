@@ -73,17 +73,14 @@ static void    *allocate_mem(size_t size)
 int sim_init(t_arguments *args)
 {
     args->ending_point = 'f';
-    
+
     args->coders = (t_coder *)(allocate_mem(sizeof(t_coder) * args->number_of_coders));
     if (args->coders == NULL)
-        return 0; // must follow return value and exit
+        return (fprintf(stderr, "Error: failed to allocate memory\n"), 0);
 
     args->dongles = (t_dongle *)(allocate_mem(sizeof(t_dongle) * args->number_of_coders));
     if (args->dongles == NULL)
-    {
-        free(args->coders);
-        return 0; // must follow return value and exit
-    }
+        return (fprintf(stderr, "Error: failed to allocate memory\n"), 0);
 
     pthread_mutex_init(&args->print_lock, NULL);
     pthread_mutex_init(&args->state_lock, NULL);

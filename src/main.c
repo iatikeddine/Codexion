@@ -15,6 +15,7 @@
 int	main(int argc, char **argv)
 {
 	t_arguments args;
+	pthread_t monitor;
 
 	if (argc == 9)
 	{
@@ -22,25 +23,19 @@ int	main(int argc, char **argv)
 			return 1;
 	}
 	else
-	{
-		fprintf(stderr, "Error: invalid number of arguments\n");
-		return 2;
-	}
+		return (fprintf(stderr, "Error: invalid number of arguments\n"), 2);
+
 	if (fill_input_data(&args, argv) == 0)
 		return 3;
+
 	if (args.number_of_coders < 2)
-	{
-		fprintf(stderr, "Error: Invalid number of coders\n");
-		return 4;
-	}
+		return (fprintf(stderr, "Error: Invalid number of coders\n"), 4);
+
 	if (sim_init(&args) == 0)
-	{
-		free_all(&args);
-		return 5;
-	}
+		return (free_all(&args), 5);
+
 	args.starting_time = get_current_time();
 	threads_init(&args);
-	pthread_t monitor;
 	pthread_create(&monitor, NULL, routine_monitoring, &args);
 	join_threads(&args);
 	pthread_join(monitor, NULL);
