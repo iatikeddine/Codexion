@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   validation.c                                       :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iatikedd <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: iatikedd <iatikedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:51:00 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/05/11 13:12:11 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/07/13 08:41:40 by iatikedd         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../inc/codexion.h"
 
@@ -18,37 +18,39 @@ int	is_valid_number(const char *num)
 
 	i = 0;
 	if (num[0] == '\0')
-		return 0;
+		return (0);
 	if (num[0] == '+' && num[1] != '\0')
 		i++;
 	while (num[i] != '\0')
 	{
 		if (num[i] < '0' || num[i] > '9')
 		{
-			fprintf(stderr, "Error: The argument %s is not valid", num);
-			return 0;
+			fprintf(stderr, "Error: The argument %s is not valid\n", num);
+			return (0);
 		}
 		i++;
 	}
-	return 1;
+	return (1);
 }
 
 int	is_all_alpha(const char *str)
 {
-	int	i = 0;
+	int	i;
 
+	i = 0;
 	if (str[0] == '\0')
-		return 0;
-	while(str[i])
+		return (0);
+	while (str[i])
 	{
-		if (!(str[i] >= 'a' && str[i] <= 'z') && !(str[i] >= 'A' && str[i] <= 'Z'))
+		if (!(str[i] >= 'a' && str[i] <= 'z')
+			&& !(str[i] >= 'A' && str[i] <= 'Z'))
 		{
 			fprintf(stderr, "Error: invalid scheduler\n");
-			return 0;
+			return (0);
 		}
 		i++;
 	}
-	return 1;
+	return (1);
 }
 
 void	to_lower(char *str)
@@ -66,21 +68,21 @@ void	to_lower(char *str)
 
 int	str_trim(char **ptr)
 {
-	int	i;
+	int		i;
 	size_t	len;
 
 	i = 0;
 	if ((*ptr)[0] == '\0')
-		return 0;
+		return (0);
 	while ((*ptr)[i] == ' ' || ((*ptr)[i] >= 9 && (*ptr)[i] <= 13))
 		i++;
 	if ((*ptr)[i] == '\0')
-		return 0;
-	*ptr += i; // pointer shift
-
+		return (0);
+	*ptr += i;
 	len = strlen(*ptr);
-	while (len > 0 && ((*ptr)[len - 1] == ' ' || ((*ptr)[len - 1] >= 9 && (*ptr)[len - 1] <= 13)))
+	while (len > 0 && ((*ptr)[len - 1] == ' '
+		|| ((*ptr)[len - 1] >= 9 && (*ptr)[len - 1] <= 13)))
 		len--;
-	(*ptr)[len] = '\0'; // start from the end and put \0 in last white space
-	return 1;
+	(*ptr)[len] = '\0';
+	return (1);
 }
