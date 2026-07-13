@@ -1,14 +1,14 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iatikedd <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: iatikedd <iatikedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:51:10 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/07/13 08:52:58 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/07/13 10:16:46 by iatikedd         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "../inc/codexion.h"
 
@@ -31,10 +31,14 @@ int	main(int argc, char **argv)
 	if (sim_init(&args) == 0)
 		return (free_all(&args), 5);
 	args.starting_time = get_current_time();
-	threads_init(&args);
-	pthread_create(&monitor, NULL, routine_monitoring, &args);
-	join_threads(&args);
-	pthread_join(monitor, NULL);
+	if (threads_init(&args) == 0)
+		return (6);
+	if (pthread_create(&monitor, NULL, routine_monitoring, &args) != 0)
+		return (fprintf(stderr, "Error: failed to create monitor thread\n"), 7);
+	if (join_threads(&args) == 0)
+		return (8);
+	if (pthread_join(monitor, NULL) != 0)
+		return (fprintf(stderr, "Error: failed to join monitor thread\n"), 9);
 	destroy_mutexes(&args);
 	free_all(&args);
 }

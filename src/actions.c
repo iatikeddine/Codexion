@@ -6,53 +6,57 @@
 /*   By: iatikedd <iatikedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/13 08:28:01 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/07/13 08:28:05 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/07/13 09:42:44 by iatikedd         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
-# include "../inc/codexion.h"
+#include "../inc/codexion.h"
 
-void    take_dongle(t_dongle *dongle, t_coder *coder)
+static void	fill_request(t_request *request, t_coder *coder)
 {
-    t_request   request;
-    long    time_to_burnout;
-    long    current_time;
+	long	time_to_burnout;
 
-    pthread_mutex_lock(&dongle->lock);
-    pthread_mutex_lock(&coder->args->state_lock);
-    time_to_burnout = coder->args->time_to_burnout + coder->last_compile_time;
-    pthread_mutex_unlock(&coder->args->state_lock);
-    request.time_left_to_burnout = time_to_burnout;
-    request.arrival_time = get_current_time();
-    request.coder = coder;
-
-    push_request(&dongle->queue, request, coder->args->scheduler);
-    current_time = get_current_time();
-    while (dongle->is_available == 0 || dongle->queue.requests[0].coder != coder || current_time < dongle->cooldown)
-    {
-        if (dongle->is_available == 1 && dongle->queue.requests[0].coder == coder)
-        {
-            struct timespec ts;
-            ts.tv_sec  = dongle->cooldown / 1000;
-            ts.tv_nsec = (dongle->cooldown % 1000) * 1000000;
-            pthread_cond_timedwait(&dongle->wait_cond, &dongle->lock, &ts);
-        }
-        else
-            pthread_cond_wait(&dongle->wait_cond, &dongle->lock);
-
-        current_time = get_current_time();
-    }
-    pop_request(&dongle->queue);
-    print_status("has taken a dongle", coder);
-    dongle->is_available = 0;
-    pthread_mutex_unlock(&dongle->lock);
+	pthread_mutex_lock(&coder->args->state_lock);
+	time_to_burnout = coder->args->time_to_burnout + coder->last_compile_time;
+	pthread_mutex_unlock(&coder->args->state_lock);
+	request->time_left_to_burnout = time_to_burnout;
+	request->arrival_time = get_current_time();
+	request->coder = coder;
 }
 
-void    drop_dongle(t_dongle *dongle, long cooldown_duration)
+void	take_dongle(t_dongle *dongle, t_coder *coder)
 {
-    pthread_mutex_lock(&dongle->lock);
-    dongle->is_available = 1;
-    dongle->cooldown = get_current_time() + cooldown_duration;
-    pthread_cond_broadcast(&dongle->wait_cond);
-    pthread_mutex_unlock(&dongle->lock);
+	struct timespec	ts;
+	t_request	request;
+
+	pthread_mutex_lock(&dongle->lock);
+	fill_request(&request, coder);
+	push_request(&dongle->queue, request, coder->args->scheduler);
+	while (dongle->is_available == 0
+		|| dongle->queue.requests[0].coder != coder
+		|| get_current_time() < dongle->cooldown)
+	{
+		if (dongle->is_available == 1
+			&& dongle->queue.requests[0].coder == coder)
+		{
+			ts.tv_sec = dongle->cooldown / 1000;
+			ts.tv_nsec = (dongle->cooldown % 1000) * 1000000;
+			pthread_cond_timedwait(&dongle->wait_cond, &dongle->lock, &ts);
+		}
+		else
+			pthread_cond_wait(&dongle->wait_cond, &dongle->lock);
+	}
+	pop_request(&dongle->queue);
+	print_status("has taken a dongle", coder);
+	dongle->is_available = 0;
+	pthread_mutex_unlock(&dongle->lock);
+}
+
+void	drop_dongle(t_dongle *dongle, long cooldown_duration)
+{
+	pthread_mutex_lock(&dongle->lock);
+	dongle->is_available = 1;
+	dongle->cooldown = get_current_time() + cooldown_duration;
+	pthread_cond_broadcast(&dongle->wait_cond);
+	pthread_mutex_unlock(&dongle->lock);
 }

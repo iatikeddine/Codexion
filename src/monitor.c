@@ -6,7 +6,7 @@
 /*   By: iatikedd <iatikedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/13 08:28:20 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/07/13 08:28:23 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/07/13 10:24:11 by iatikedd         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -63,6 +63,5 @@ void    *routine_monitoring(void *arg)
             pthread_mutex_unlock(&args->state_lock);
             return NULL;
         }
-        usleep(1000);
     }
 }

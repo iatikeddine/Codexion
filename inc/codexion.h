@@ -6,7 +6,7 @@
 /*   By: iatikedd <iatikedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/13 08:30:32 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/07/13 08:34:45 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/07/13 10:15:20 by iatikedd         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -84,6 +84,8 @@ int		str_trim(char **ptr);
 int		fill_input_data(t_arguments *args, char **argv);
 int		parse_args(int argc, char **argv);
 int		sim_init(t_arguments *args);
+int		threads_init(t_arguments *args);
+int		join_threads(t_arguments *args);
 long	get_current_time(void);
 void	to_lower(char *str);
 void	push_request(t_heap *queue, t_request req, char scheduler_type);
@@ -94,8 +96,6 @@ void	print_status(char *str, t_coder *coder);
 void	*routine(void *arg);
 void	*routine_monitoring(void *arg);
 void	destroy_mutexes(t_arguments *args);
-void	threads_init(t_arguments *args);
-void	join_threads(t_arguments *args);
 void	free_all(t_arguments *args);
 
 #endif

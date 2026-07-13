@@ -6,7 +6,7 @@
 /*   By: iatikedd <iatikedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/13 08:29:03 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/07/13 09:05:19 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/07/13 10:14:50 by iatikedd         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -55,7 +55,7 @@ void	destroy_mutexes(t_arguments *args)
 	}
 }
 
-void	threads_init(t_arguments *args)
+int	threads_init(t_arguments *args)
 {
 	int	i;
 
@@ -63,20 +63,30 @@ void	threads_init(t_arguments *args)
 	while (i < args->number_of_coders)
 	{
 		args->coders[i].last_compile_time = get_current_time();
-		pthread_create(&args->coders[i].coder_thread, NULL, routine,
-			&args->coders[i]);
+		if (pthread_create(&args->coders[i].coder_thread, NULL, routine,
+			&args->coders[i]) != 0)
+		{
+			fprintf(stderr, "Error: failed to create coder thread\n");
+			return (0);
+		}
 		i++;
 	}
+	return (1);
 }
 
-void	join_threads(t_arguments *args)
+int	join_threads(t_arguments *args)
 {
 	int	i;
 
 	i = 0;
 	while (i < args->number_of_coders)
 	{
-		pthread_join(args->coders[i].coder_thread, NULL);
+		if (pthread_join(args->coders[i].coder_thread, NULL) != 0)
+		{
+			fprintf(stderr, "Error: failed to join thread\n");
+			return (0);
+		}
 		i++;
 	}
+	return (1);
 }
