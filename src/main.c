@@ -20,12 +20,12 @@ int	main(int argc, char **argv)
 	if (argc == 9)
 	{
 		if (parse_args(argc, argv) == 0)
-			return 1;
+			return (1);
 	}
 	else
 		return (fprintf(stderr, "Error: invalid number of arguments\n"), 2);
 	if (fill_input_data(&args, argv) == 0)
-		return 3;
+		return (3);
 	if (args.number_of_coders < 2)
 		return (fprintf(stderr, "Error: Invalid number of coders\n"), 4);
 	if (sim_init(&args) == 0)

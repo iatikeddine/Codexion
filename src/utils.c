@@ -64,7 +64,7 @@ int	threads_init(t_arguments *args)
 	{
 		args->coders[i].last_compile_time = get_current_time();
 		if (pthread_create(&args->coders[i].coder_thread, NULL, routine,
-			&args->coders[i]) != 0)
+				&args->coders[i]) != 0)
 		{
 			fprintf(stderr, "Error: failed to create coder thread\n");
 			return (0);
