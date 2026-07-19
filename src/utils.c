@@ -24,6 +24,8 @@ void	print_status(char *str, t_coder *coder)
 		pthread_mutex_unlock(&coder->args->print_lock);
 		return ;
 	}
+	if (strcmp(str, "burned out") == 0)
+		coder->args->ending_point = 't';
 	pthread_mutex_unlock(&coder->args->state_lock);
 	timestamp = get_current_time() - coder->args->starting_time;
 	printf("%ld %d %s\n", timestamp, coder->coder_id, str);

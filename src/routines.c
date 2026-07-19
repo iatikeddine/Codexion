@@ -26,15 +26,25 @@ static int	check_simulation(t_coder *coder)
 
 static void	compiling(t_coder *coder)
 {
-	if (coder->coder_id % 2 == 0)
+	if (coder->args->number_of_coders == 1)
 	{
 		take_dongle(coder->right_dongle, coder);
-		take_dongle(coder->left_dongle, coder);
+		while (check_simulation(coder) == 0)
+			usleep(1000);
+		return;
 	}
 	else
 	{
-		take_dongle(coder->left_dongle, coder);
-		take_dongle(coder->right_dongle, coder);
+		if (coder->coder_id % 2 == 0)
+		{
+			take_dongle(coder->right_dongle, coder);
+			take_dongle(coder->left_dongle, coder);
+		}
+		else
+		{
+			take_dongle(coder->left_dongle, coder);
+			take_dongle(coder->right_dongle, coder);
+		}
 	}
 	print_status("is compiling", coder);
 	pthread_mutex_lock(&coder->args->state_lock);

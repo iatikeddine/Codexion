@@ -35,9 +35,6 @@ void    *routine_monitoring(void *arg)
             if (get_current_time() - last_compile_time >= args->time_to_burnout)
             {
                 print_status("burned out", coder);
-                pthread_mutex_lock(&args->state_lock);
-                args->ending_point = 't';
-                pthread_mutex_unlock(&args->state_lock);
                 return NULL;
             }
             i++;
@@ -63,5 +60,6 @@ void    *routine_monitoring(void *arg)
             pthread_mutex_unlock(&args->state_lock);
             return NULL;
         }
+        usleep(1000);
     }
 }
