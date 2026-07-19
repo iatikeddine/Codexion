@@ -49,9 +49,17 @@ int	main(int argc, char **argv)
 		return (fprintf(stderr, "Error: failed to create monitor thread\n"), 7);
 	}
 	if (join_threads(&args) == 0)
+	{
+		destroy_mutexes(&args);
+		free_all(&args);
 		return (8);
+	}
 	if (pthread_join(monitor, NULL) != 0)
+	{
+		destroy_mutexes(&args);
+		free_all(&args);
 		return (fprintf(stderr, "Error: failed to join monitor thread\n"), 9);
+	}
 	destroy_mutexes(&args);
 	free_all(&args);
 }

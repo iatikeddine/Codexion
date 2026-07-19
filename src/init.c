@@ -50,7 +50,7 @@ static int	dongles_init(t_arguments *args)
 		args->dongles[i].is_available = 1;
 		args->dongles[i].cooldown = 0;
 		args->dongles[i].queue.current_size = 0;
-		if ((pthread_mutex_init(&args->dongles[i].lock, NULL) != 0) || (pthread_cond_init(&args->dongles[i].wait_cond, NULL) != 0))
+		if (pthread_mutex_init(&args->dongles[i].lock, NULL) != 0)
 		{
 			while (--i >= 0)
 			{
@@ -58,6 +58,15 @@ static int	dongles_init(t_arguments *args)
 				pthread_cond_destroy(&args->dongles[i].wait_cond);
 			}
 			return (0);
+		}
+		if (pthread_cond_init(&args->dongles[i].wait_cond, NULL) != 0)
+		{
+			pthread_mutex_destroy(&args->dongles[i].lock);
+			while (--i >= 0)
+			{
+				pthread_mutex_destroy(&args->dongles[i].lock);
+				pthread_cond_destroy(&args->dongles[i].wait_cond);
+			}
 		}
 		i++;
 	}
@@ -91,7 +100,10 @@ int	sim_init(t_arguments *args)
 	if (pthread_mutex_init(&args->print_lock, NULL) != 0)
 		return (fprintf(stderr, "Error: failed to init print mutex"), 0);
 	if (pthread_mutex_init(&args->state_lock, NULL) != 0)
+	{
+		pthread_mutex_destroy(&args->print_lock);
 		return (fprintf(stderr, "Error: failed to init state mutex"), 0);
+	}
 	if (dongles_init(args) == 0)
 	{
 		pthread_mutex_destroy(&args->print_lock);
