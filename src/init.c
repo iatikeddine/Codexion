@@ -12,6 +12,15 @@
 
 #include "../inc/codexion.h"
 
+static void	destroy(t_arguments *args, int i)
+{
+	while (--i >= 0)
+	{
+		pthread_mutex_destroy(&args->dongles[i].lock);
+		pthread_cond_destroy(&args->dongles[i].wait_cond);
+	}
+}
+
 static void	coders_init(t_arguments *args)
 {
 	int	i;
@@ -52,21 +61,13 @@ static int	dongles_init(t_arguments *args)
 		args->dongles[i].queue.current_size = 0;
 		if (pthread_mutex_init(&args->dongles[i].lock, NULL) != 0)
 		{
-			while (--i >= 0)
-			{
-				pthread_mutex_destroy(&args->dongles[i].lock);
-				pthread_cond_destroy(&args->dongles[i].wait_cond);
-			}
+			destroy(args, i);
 			return (0);
 		}
 		if (pthread_cond_init(&args->dongles[i].wait_cond, NULL) != 0)
 		{
 			pthread_mutex_destroy(&args->dongles[i].lock);
-			while (--i >= 0)
-			{
-				pthread_mutex_destroy(&args->dongles[i].lock);
-				pthread_cond_destroy(&args->dongles[i].wait_cond);
-			}
+			destroy(args, i);
 		}
 		i++;
 	}
