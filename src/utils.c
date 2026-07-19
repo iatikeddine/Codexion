@@ -72,11 +72,8 @@ int	threads_init(t_arguments *args)
 			pthread_mutex_lock(&args->state_lock);
 			args->ending_point = 't';
 			pthread_mutex_unlock(&args->state_lock);
-			while (i >= 0)
-			{
+			while (--i >= 0)
 				pthread_join(args->coders[i].coder_thread, NULL);
-				i--;
-			}
 			return (0);
 		}
 		i++;
