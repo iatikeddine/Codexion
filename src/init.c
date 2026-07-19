@@ -39,7 +39,7 @@ static void	coders_init(t_arguments *args)
 	}
 }
 
-static void	dongles_init(t_arguments *args)
+static int	dongles_init(t_arguments *args)
 {
 	int	i;
 
@@ -50,10 +50,19 @@ static void	dongles_init(t_arguments *args)
 		args->dongles[i].is_available = 1;
 		args->dongles[i].cooldown = 0;
 		args->dongles[i].queue.current_size = 0;
-		pthread_mutex_init(&args->dongles[i].lock, NULL);
-		pthread_cond_init(&args->dongles[i].wait_cond, NULL);
+		if ((pthread_mutex_init(&args->dongles[i].lock, NULL) != 0) || (pthread_cond_init(&args->dongles[i].wait_cond, NULL) != 0))
+		{
+			while (i >= 0)
+			{
+				pthread_mutex_destroy(&args->dongles[i].lock);
+				pthread_cond_destroy(&args->dongles[i].wait_cond);
+				i--;
+			}
+			return (0);
+		}
 		i++;
 	}
+	return (1);
 }
 
 static void	*allocate_mem(size_t size)
@@ -80,9 +89,16 @@ int	sim_init(t_arguments *args)
 				* args->number_of_coders));
 	if (args->dongles == NULL)
 		return (fprintf(stderr, "Error: failed to allocate memory\n"), 0);
-	pthread_mutex_init(&args->print_lock, NULL);
-	pthread_mutex_init(&args->state_lock, NULL);
-	dongles_init(args);
+	if (pthread_mutex_init(&args->print_lock, NULL) != 0)
+		return (fprintf(stderr, "Error: failed to init print mutex"), 0);
+	if (pthread_mutex_init(&args->state_lock, NULL) != 0)
+		return (fprintf(stderr, "Error: failed to init state mutex"), 0);
+	if (dongles_init(args) == 0)
+	{
+		pthread_mutex_destroy(&args->print_lock);
+		pthread_mutex_destroy(&args->state_lock);
+		return (fprintf(stderr, "Error: failed to init mutex or cond variable"), 0);
+	}
 	coders_init(args);
 	return (1);
 }

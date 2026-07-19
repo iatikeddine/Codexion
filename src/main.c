@@ -27,7 +27,7 @@ int	main(int argc, char **argv)
 	if (fill_input_data(&args, argv) == 0)
 		return (3);
 	if (args.number_of_coders < 1)
-		return (fprintf(stderr, "Error: Invalid number of coders\n"), 4);
+		return (fprintf(stderr, "Error: 1 or more coders needed\n"), 4);
 	if (sim_init(&args) == 0)
 		return (free_all(&args), 5);
 	args.starting_time = get_current_time();
