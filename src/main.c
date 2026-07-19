@@ -40,6 +40,9 @@ int	main(int argc, char **argv)
 	}
 	if (pthread_create(&monitor, NULL, routine_monitoring, &args) != 0)
 	{
+		pthread_mutex_lock(&args.state_lock);
+		args.ending_point = 'f';
+		pthread_mutex_unlock(&args.state_lock);
 		join_threads(&args);
 		destroy_mutexes(&args);
 		free_all(&args);
