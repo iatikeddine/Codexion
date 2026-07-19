@@ -64,7 +64,7 @@ int	threads_init(t_arguments *args)
 	i = 0;
 	while (i < args->number_of_coders)
 	{
-		args->coders[i].last_compile_time = get_current_time();
+		args->coders[i].last_compile_time = args->starting_time;
 		if (pthread_create(&args->coders[i].coder_thread, NULL, routine,
 				&args->coders[i]) != 0)
 		{
