@@ -37,6 +37,7 @@ static void	compiling(t_coder *coder)
 	{
 		if (coder->coder_id % 2 == 0)
 		{
+			usleep(15000);
 			take_dongle(coder->right_dongle, coder);
 			take_dongle(coder->left_dongle, coder);
 		}
