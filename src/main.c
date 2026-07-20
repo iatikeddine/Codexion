@@ -61,6 +61,8 @@ int	main(int argc, char **argv)
 		return (3);
 	if (args.number_of_coders < 1)
 		return (fprintf(stderr, "Error: 1 or more coders needed\n"), 4);
+	if (args.number_of_compiles_required == 0)
+		return (0);
 	if (sim_init(&args) == 0)
 		return (free_all(&args), 5);
 	return (run_simulation(&args));
