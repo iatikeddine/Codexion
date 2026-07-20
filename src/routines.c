@@ -31,7 +31,7 @@ static void	compiling(t_coder *coder)
 		take_dongle(coder->right_dongle, coder);
 		while (check_simulation(coder) == 0)
 			usleep(1000);
-		return;
+		return ;
 	}
 	else
 	{

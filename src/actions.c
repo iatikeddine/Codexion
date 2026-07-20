@@ -27,7 +27,7 @@ static void	fill_request(t_request *request, t_coder *coder)
 void	take_dongle(t_dongle *dongle, t_coder *coder)
 {
 	struct timespec	ts;
-	t_request	request;
+	t_request		request;
 
 	pthread_mutex_lock(&dongle->lock);
 	fill_request(&request, coder);

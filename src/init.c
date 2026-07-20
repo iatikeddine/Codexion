@@ -109,7 +109,8 @@ int	sim_init(t_arguments *args)
 	{
 		pthread_mutex_destroy(&args->print_lock);
 		pthread_mutex_destroy(&args->state_lock);
-		return (fprintf(stderr, "Error: failed to init mutex or cond variable"), 0);
+		fprintf(stderr, "Error: failed to init mutex or cond variable");
+		return (0);
 	}
 	coders_init(args);
 	return (1);
