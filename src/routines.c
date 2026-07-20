@@ -47,12 +47,7 @@ static void	compiling(t_coder *coder)
 			take_dongle(coder->right_dongle, coder);
 		}
 	}
-	print_status("is compiling", coder);
-	pthread_mutex_lock(&coder->args->state_lock);
-	coder->last_compile_time = get_current_time();
-	coder->number_of_compiles++;
-	pthread_mutex_unlock(&coder->args->state_lock);
-	usleep(coder->args->time_to_compile * 1000);
+	change_status(coder);
 	drop_dongle(coder->left_dongle, coder->args->dongle_cooldown);
 	drop_dongle(coder->right_dongle, coder->args->dongle_cooldown);
 }

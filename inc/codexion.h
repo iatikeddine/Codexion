@@ -97,5 +97,6 @@ void	*routine(void *arg);
 void	*routine_monitoring(void *arg);
 void	destroy_mutexes(t_arguments *args);
 void	free_all(t_arguments *args);
+void	change_status(t_coder *coder);
 
 #endif
