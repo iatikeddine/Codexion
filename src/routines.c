@@ -37,7 +37,6 @@ static void	compiling(t_coder *coder)
 	{
 		if (coder->coder_id % 2 == 0)
 		{
-			usleep(15000);
 			take_dongle(coder->right_dongle, coder);
 			take_dongle(coder->left_dongle, coder);
 		}
@@ -69,6 +68,8 @@ void	*routine(void *arg)
 	t_coder	*coder;
 
 	coder = (t_coder *)arg;
+	if (coder->coder_id % 2 == 0)
+		usleep(1000);
 	while (check_simulation(coder) == 0)
 	{
 		compiling(coder);
