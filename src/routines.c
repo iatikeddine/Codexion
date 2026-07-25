@@ -35,9 +35,7 @@ static void	compiling(t_coder *coder)
 	}
 	else
 	{
-		if (coder->coder_id % 2 == 0
-			|| (coder->coder_id == coder->args->number_of_coders
-				&& coder->args->number_of_coders % 2 != 0))
+		if (coder->coder_id % 2 == 0)
 		{
 			take_dongle(coder->right_dongle, coder);
 			take_dongle(coder->left_dongle, coder);
@@ -68,12 +66,12 @@ static void	refactoring(t_coder *coder)
 void	*routine(void *arg)
 {
 	t_coder	*coder;
+	long	sleep;
 
 	coder = (t_coder *)arg;
-	if (coder->coder_id % 2 == 0
-		|| (coder->coder_id == coder->args->number_of_coders
-			&& coder->args->number_of_coders % 2 != 0))
-		usleep(15000);
+	sleep = coder->args->time_to_compile + coder->args->dongle_cooldown;
+	if (coder->coder_id % 2 == 0)
+		usleep((sleep / 2) * 1000);
 	while (check_simulation(coder) == 0)
 	{
 		compiling(coder);
