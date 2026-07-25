@@ -36,9 +36,9 @@ void	smart_sleep(t_coder *coder)
 	long	time_to_wait;
 
 	pthread_mutex_lock(&coder->args->state_lock);
-	time_since_compile = get_current_time() - coder->last_compile_time;
+	t_since_compile = get_current_time() - coder->last_compile_time;
 	pthread_mutex_unlock(&coder->args->state_lock);
-	if (time_since_compile < (coder->args->time_to_burnout * 0.7))
+	if (t_since_compile < (coder->args->time_to_burnout * 0.7))
 	{
 		time_to_wait = (coder->args->time_to_burnout * 0.7) - t_since_compile;
 		usleep(time_to_wait * 1000);
