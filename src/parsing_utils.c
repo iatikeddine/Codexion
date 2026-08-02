@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/codexion.h"
+#include "codexion.h"
 
 int	is_valid_number(const char *num)
 {

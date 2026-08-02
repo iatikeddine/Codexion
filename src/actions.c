@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/codexion.h"
+#include "codexion.h"
 
 static void	fill_request(t_request *request, t_coder *coder)
 {

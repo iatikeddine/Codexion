@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/codexion.h"
+#include "codexion.h"
 
 void	print_status(char *str, t_coder *coder)
 {

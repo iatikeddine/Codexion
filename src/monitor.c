@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/codexion.h"
+#include "codexion.h"
 
 int	check_burnout(t_arguments *args)
 {

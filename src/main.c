@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/codexion.h"
+#include "codexion.h"
 
 static int	clean_and_exit(t_arguments *args, int code, char *msg)
 {

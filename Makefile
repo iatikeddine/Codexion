@@ -6,7 +6,7 @@ INC = -I inc
 
 SRCS = src/main.c src/init.c src/routines.c src/actions.c \
        src/monitor.c src/queue.c src/utils.c src/utils_2.c \
-       parsing/parser.c parsing/utils.c
+       src/parser.c src/parsing_utils.c
 
 OBJS = $(SRCS:.c=.o)
 
