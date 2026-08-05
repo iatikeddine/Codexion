@@ -81,7 +81,6 @@ void	*routine(void *arg)
 		if (check_simulation(coder) == 1)
 			return (NULL);
 		refactoring(coder);
-		smart_sleep(coder);
 	}
 	return (NULL);
 }
