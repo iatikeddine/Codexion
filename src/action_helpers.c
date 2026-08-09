@@ -32,7 +32,7 @@ void	one_coder(t_coder *coder)
 {
 	long	time_to_burnout;
 
-	time_to_burnout = get_current_time() + coder->args->dongle_cooldown;
+	time_to_burnout = get_current_time() + coder->args->time_to_burnout;
 	while (get_current_time() < time_to_burnout)
 		usleep(1000);
 }

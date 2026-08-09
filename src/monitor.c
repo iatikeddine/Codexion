@@ -71,14 +71,17 @@ void	*routine_monitoring(void *arg)
 	{
 		if (check_burnout(args) == 0)
 		{
-			pthread_mutex_lock(&args->lock_sim);
+			pthread_mutex_lock(&args->state_lock);
 			args->ending_point = 't';
-			pthread_mutex_unlock(&args->lock_sim);
+			pthread_mutex_unlock(&args->state_lock);
 			pthread_cond_broadcast(&args->wake_cond);
 			return (NULL);
 		}
 		if (check_required_compiles(args) == 0)
+		{
+			pthread_cond_broadcast(&args->wake_cond);
 			return (NULL);
+		}
 		usleep(500);
 		pthread_cond_broadcast(&args->wake_cond);
 	}
