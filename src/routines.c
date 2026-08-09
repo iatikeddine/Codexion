@@ -12,55 +12,25 @@
 
 #include "codexion.h"
 
-static int	check_simulation(t_coder *coder)
+static int	compiling(t_coder *coder)
 {
-	pthread_mutex_lock(&coder->args->state_lock);
-	if (coder->args->ending_point == 't')
-	{
-		pthread_mutex_unlock(&coder->args->state_lock);
-		return (1);
-	}
-	pthread_mutex_unlock(&coder->args->state_lock);
-	return (0);
-}
-
-static void	compiling(t_coder *coder)
-{
-	if (coder->args->number_of_coders == 1)
-	{
-		take_dongle(coder->right_dongle, coder);
-		while (check_simulation(coder) == 0)
-			usleep(1000);
-		return ;
-	}
-	else
-	{
-		if (coder->coder_id % 2 == 0)
-		{
-			take_dongle(coder->right_dongle, coder);
-			take_dongle(coder->left_dongle, coder);
-		}
-		else
-		{
-			take_dongle(coder->left_dongle, coder);
-			take_dongle(coder->right_dongle, coder);
-		}
-	}
+	if (take_dongles(coder->right_dongle, coder->left_dongle, coder) == 0)
+		return 0;
 	change_status(coder);
-	drop_dongle(coder->left_dongle, coder->args->dongle_cooldown);
-	drop_dongle(coder->right_dongle, coder->args->dongle_cooldown);
+	drop_dongles(coder->right_dongle, coder->left_dongle, coder);
+	return 1;
 }
 
 static void	debugging(t_coder *coder)
 {
 	print_status("is debugging", coder);
-	usleep(coder->args->time_to_debug * 1000);
+	smart_sleep(coder->args->time_to_debug, coder);
 }
 
 static void	refactoring(t_coder *coder)
 {
 	print_status("is refactoring", coder);
-	usleep(coder->args->time_to_refactor * 1000);
+	smart_sleep(coder->args->time_to_refactor, coder);
 }
 
 void	*routine(void *arg)
@@ -71,10 +41,11 @@ void	*routine(void *arg)
 	coder = (t_coder *)arg;
 	sleep = coder->args->time_to_compile + coder->args->dongle_cooldown;
 	if (coder->coder_id % 2 == 0)
-		usleep((sleep / 2) * 1000);
+		smart_sleep(sleep / 3, coder);
 	while (check_simulation(coder) == 0)
 	{
-		compiling(coder);
+		if(compiling(coder) == 0)
+			return (NULL);
 		if (check_simulation(coder) == 1)
 			return (NULL);
 		debugging(coder);

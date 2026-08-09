@@ -27,5 +27,30 @@ void	change_status(t_coder *coder)
 	coder->last_compile_time = get_current_time();
 	coder->number_of_compiles++;
 	pthread_mutex_unlock(&coder->args->state_lock);
-	usleep(coder->args->time_to_compile * 1000);
+	smart_sleep(coder->args->time_to_compile, coder);
+}
+
+void	smart_sleep(long time_to_sleep, t_coder *coder)
+{
+	long	sleep_deadline;
+
+	sleep_deadline = get_current_time() + time_to_sleep;
+	while (get_current_time() < sleep_deadline)
+	{
+		if (check_simulation(coder) == 1)
+			return ;
+		usleep(500);
+	}
+}
+
+int	check_simulation(t_coder *coder)
+{
+	pthread_mutex_lock(&coder->args->state_lock);
+	if (coder->args->ending_point == 't')
+	{
+		pthread_mutex_unlock(&coder->args->state_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&coder->args->state_lock);
+	return (0);
 }

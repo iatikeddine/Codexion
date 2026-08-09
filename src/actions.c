@@ -12,51 +12,71 @@
 
 #include "codexion.h"
 
-static void	fill_request(t_request *request, t_coder *coder)
+void	reserve_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 {
-	long	time_to_burnout;
-
-	pthread_mutex_lock(&coder->args->state_lock);
-	time_to_burnout = coder->args->time_to_burnout + coder->last_compile_time;
-	pthread_mutex_unlock(&coder->args->state_lock);
-	request->time_left_to_burnout = time_to_burnout;
-	request->arrival_time = get_current_time();
-	request->coder = coder;
+	dongle_1->is_available = 0;
+	dongle_2->is_available = 0;
+	pop_request(&dongle_1->queue);
+	pop_request(&dongle_2->queue);
+	pthread_mutex_unlock(&dongle_2->lock);
+	pthread_mutex_unlock(&dongle_1->lock);
+	pthread_mutex_unlock(&coder->args->lock_sim);
+	print_status("has taken a dongle", coder);
+	print_status("has taken a dongle", coder);
 }
 
-void	take_dongle(t_dongle *dongle, t_coder *coder)
+int	take_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 {
 	struct timespec	ts;
-	t_request		request;
+	long	max_cooldown;
 
-	pthread_mutex_lock(&dongle->lock);
-	fill_request(&request, coder);
-	push_request(&dongle->queue, request, coder->args->scheduler);
-	while (dongle->is_available == 0
-		|| dongle->queue.requests[0].coder != coder
-		|| get_current_time() < dongle->cooldown)
+	pthread_mutex_lock(&coder->args->lock_sim);
+	if (coder->args->number_of_coders == 1)
 	{
-		if (dongle->is_available == 1
-			&& dongle->queue.requests[0].coder == coder)
+		one_coder(coder);
+		pthread_mutex_unlock(&coder->args->lock_sim);
+		return (0);
+	}
+	fill_requests(dongle_1, dongle_2, coder);
+	while (1)
+	{
+		pthread_mutex_lock(&dongle_1->lock);
+		if (coder->args->number_of_coders != 1)
+			pthread_mutex_lock(&dongle_2->lock);
+		if (both_ready(dongle_1, dongle_2, coder) == 1)
 		{
-			ts.tv_sec = dongle->cooldown / 1000;
-			ts.tv_nsec = (dongle->cooldown % 1000) * 1000000;
-			pthread_cond_timedwait(&dongle->wait_cond, &dongle->lock, &ts);
+			reserve_dongles(dongle_1, dongle_2, coder);
+			return 1;
+		}
+		max_cooldown = highest_cooldown(dongle_1, dongle_2);
+		pthread_mutex_unlock(&dongle_2->lock);
+		pthread_mutex_unlock(&dongle_1->lock);
+		if (get_current_time() < max_cooldown)
+		{
+			ts.tv_sec = max_cooldown / 1000;
+			ts.tv_nsec = (max_cooldown % 1000) * 1000000;
+			pthread_cond_timedwait(&coder->args->wake_cond, &coder->args->lock_sim, &ts);
 		}
 		else
-			pthread_cond_wait(&dongle->wait_cond, &dongle->lock);
+			pthread_cond_wait(&coder->args->wake_cond, &coder->args->lock_sim);
 	}
-	pop_request(&dongle->queue);
-	print_status("has taken a dongle", coder);
-	dongle->is_available = 0;
-	pthread_mutex_unlock(&dongle->lock);
+	return 1;
 }
 
-void	drop_dongle(t_dongle *dongle, long cooldown_duration)
+void	drop_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 {
-	pthread_mutex_lock(&dongle->lock);
-	dongle->is_available = 1;
-	dongle->cooldown = get_current_time() + cooldown_duration;
-	pthread_cond_broadcast(&dongle->wait_cond);
-	pthread_mutex_unlock(&dongle->lock);
+	pthread_mutex_lock(&coder->args->lock_sim);
+
+	pthread_mutex_lock(&dongle_1->lock);
+	dongle_1->is_available = 1;
+	dongle_1->cooldown = get_current_time() + coder->args->dongle_cooldown;
+	pthread_mutex_unlock(&dongle_1->lock);
+
+	pthread_mutex_lock(&dongle_2->lock);
+	dongle_2->is_available = 1;
+	dongle_2->cooldown = get_current_time() + coder->args->dongle_cooldown;
+	pthread_mutex_unlock(&dongle_2->lock);
+
+	pthread_cond_broadcast(&coder->args->wake_cond);
+	pthread_mutex_unlock(&coder->args->lock_sim);
 }
