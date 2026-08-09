@@ -93,7 +93,5 @@ int	parse_args(int argc, char **argv)
 		i++;
 	}
 	to_lower(argv[8]);
-	if (is_all_alpha(argv[8]) == 0)
-		return (0);
 	return (1);
 }

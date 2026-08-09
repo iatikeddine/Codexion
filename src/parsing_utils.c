@@ -33,26 +33,6 @@ int	is_valid_number(const char *num)
 	return (1);
 }
 
-int	is_all_alpha(const char *str)
-{
-	int	i;
-
-	i = 0;
-	if (str[0] == '\0')
-		return (0);
-	while (str[i])
-	{
-		if (!(str[i] >= 'a' && str[i] <= 'z')
-			&& !(str[i] >= 'A' && str[i] <= 'Z'))
-		{
-			fprintf(stderr, "Error: invalid scheduler\n");
-			return (0);
-		}
-		i++;
-	}
-	return (1);
-}
-
 void	to_lower(char *str)
 {
 	int	i;
