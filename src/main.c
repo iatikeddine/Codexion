@@ -49,7 +49,8 @@ int	main(int argc, char **argv)
 {
 	t_arguments	args;
 
-	memset(&args, 0, sizeof(t_arguments));
+	args.coders = NULL;
+	args.dongles = NULL;
 	if (argc == 9)
 	{
 		if (parse_args(argc, argv) == 0)
