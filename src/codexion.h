@@ -26,7 +26,7 @@ typedef struct s_coder	t_coder;
 
 typedef struct s_arguments
 {
-	int				number_of_coders;
+	long			number_of_coders;
 	long			number_of_compiles_required;
 	long			time_to_burnout;
 	long			time_to_compile;
