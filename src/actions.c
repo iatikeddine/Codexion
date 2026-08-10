@@ -18,11 +18,11 @@ void	reserve_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 	dongle_2->is_available = 0;
 	pop_request(&dongle_1->queue);
 	pop_request(&dongle_2->queue);
+	print_status("has taken a dongle", coder);
+	print_status("has taken a dongle", coder);
 	pthread_mutex_unlock(&dongle_2->lock);
 	pthread_mutex_unlock(&dongle_1->lock);
 	pthread_mutex_unlock(&coder->args->lock_sim);
-	print_status("has taken a dongle", coder);
-	print_status("has taken a dongle", coder);
 }
 
 int	take_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
