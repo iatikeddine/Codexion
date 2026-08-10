@@ -37,7 +37,7 @@ static int	run_simulation(t_arguments *args)
 		return (clean_and_exit(args, 7,
 				"Error: failed to create monitor thread\n"));
 	}
-	if (join_threads(args) != 0)
+	if (join_threads(args) == 0)
 		return (clean_and_exit(args, 8, NULL));
 	if (pthread_join(monitor, NULL) != 0)
 		return (clean_and_exit(args, 9,
