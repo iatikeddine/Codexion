@@ -49,7 +49,7 @@ int	take_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 		pthread_cond_wait(&coder->args->wake_cond, &coder->args->lock_sim);
 	}
 	pthread_mutex_unlock(&coder->args->lock_sim);
-	return (1);
+	return (0);
 }
 
 void	drop_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
