@@ -48,8 +48,8 @@ void	destroy_mutexes(t_arguments *args)
 
 	pthread_mutex_destroy(&args->print_lock);
 	pthread_mutex_destroy(&args->state_lock);
-	pthread_cond_destroy(&args->wake_cond);
 	pthread_mutex_destroy(&args->lock_sim);
+	pthread_cond_destroy(&args->wake_cond);
 	i = 0;
 	while (i < args->number_of_coders)
 	{

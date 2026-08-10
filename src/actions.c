@@ -27,9 +27,6 @@ void	reserve_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 
 int	take_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 {
-	struct timespec	ts;
-	long	max_cooldown;
-
 	pthread_mutex_lock(&coder->args->lock_sim);
 	if (coder->args->number_of_coders == 1)
 	{
@@ -38,29 +35,21 @@ int	take_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 		return (0);
 	}
 	fill_requests(dongle_1, dongle_2, coder);
-	while (1)
+	while (check_simulation(coder) == 0)
 	{
 		pthread_mutex_lock(&dongle_1->lock);
-		if (coder->args->number_of_coders != 1)
-			pthread_mutex_lock(&dongle_2->lock);
+		pthread_mutex_lock(&dongle_2->lock);
 		if (both_ready(dongle_1, dongle_2, coder) == 1)
 		{
 			reserve_dongles(dongle_1, dongle_2, coder);
 			return 1;
 		}
-		max_cooldown = highest_cooldown(dongle_1, dongle_2);
 		pthread_mutex_unlock(&dongle_2->lock);
 		pthread_mutex_unlock(&dongle_1->lock);
-		if (get_current_time() < max_cooldown)
-		{
-			ts.tv_sec = max_cooldown / 1000;
-			ts.tv_nsec = (max_cooldown % 1000) * 1000000;
-			pthread_cond_timedwait(&coder->args->wake_cond, &coder->args->lock_sim, &ts);
-		}
-		else
-			pthread_cond_wait(&coder->args->wake_cond, &coder->args->lock_sim);
+		pthread_cond_wait(&coder->args->wake_cond, &coder->args->lock_sim);
 	}
-	return 1;
+	pthread_mutex_unlock(&coder->args->lock_sim);
+	return (1);
 }
 
 void	drop_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)

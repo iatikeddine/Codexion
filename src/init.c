@@ -12,12 +12,6 @@
 
 #include "codexion.h"
 
-static void	destroy(t_arguments *args, int i)
-{
-	while (--i >= 0)
-		pthread_mutex_destroy(&args->dongles[i].lock);
-}
-
 static void	coders_init(t_arguments *args)
 {
 	int	i;
@@ -58,7 +52,8 @@ static int	dongles_init(t_arguments *args)
 		args->dongles[i].queue.current_size = 0;
 		if (pthread_mutex_init(&args->dongles[i].lock, NULL) != 0)
 		{
-			destroy(args, i);
+			while (--i >= 0)
+				pthread_mutex_destroy(&args->dongles[i].lock);
 			return (0);
 		}
 		i++;
@@ -79,11 +74,27 @@ static void	*allocate_mem(size_t size)
 	return (mem);
 }
 
+static int	init_mutexes(t_arguments *args)
+{
+	if (pthread_mutex_init(&args->print_lock, NULL) != 0)
+		return (fprintf(stderr, "Error: failed to init mutex"), 0);
+	if (pthread_mutex_init(&args->state_lock, NULL) != 0)
+	{
+		pthread_mutex_destroy(&args->print_lock);
+		return (fprintf(stderr, "Error: failed to init mutex"), 0);
+	}
+	if (pthread_mutex_init(&args->lock_sim, NULL) != 0)
+	{
+		pthread_mutex_destroy(&args->print_lock);
+		pthread_mutex_destroy(&args->state_lock);
+		return (fprintf(stderr, "Error: failed to init mutex"), 0);
+	}
+	return (1);
+}
+
 int	sim_init(t_arguments *args)
 {
 	args->ending_point = 'f';
-	if (pthread_cond_init(&args->wake_cond, NULL) != 0)
-		return (fprintf(stderr, "Error: failed to init cond variable"), 0);
 	args->coders = (allocate_mem(sizeof(t_coder)
 				* args->number_of_coders));
 	if (args->coders == NULL)
@@ -92,23 +103,18 @@ int	sim_init(t_arguments *args)
 				* args->number_of_coders));
 	if (args->dongles == NULL)
 		return (fprintf(stderr, "Error: failed to allocate memory\n"), 0);
-	if (pthread_mutex_init(&args->print_lock, NULL) != 0)
-		return (fprintf(stderr, "Error: failed to init print mutex"), 0);
-	if (pthread_mutex_init(&args->state_lock, NULL) != 0)
+	if (pthread_cond_init(&args->wake_cond, NULL) != 0)
+		return (fprintf(stderr, "Error: failed to init cond variable"), 0);
+	if (init_mutexes(args) == 0)
 	{
-		pthread_mutex_destroy(&args->print_lock);
-		return (fprintf(stderr, "Error: failed to init state mutex"), 0);
-	}
-	if (pthread_mutex_init(&args->lock_sim, NULL) != 0)
-	{
-		pthread_mutex_destroy(&args->print_lock);
-		pthread_mutex_destroy(&args->state_lock);
-		return (fprintf(stderr, "Error: failed to init state mutex"), 0);
+		pthread_cond_destroy(&args->wake_cond);
+		return (0);
 	}
 	if (dongles_init(args) == 0)
 	{
 		pthread_mutex_destroy(&args->print_lock);
 		pthread_mutex_destroy(&args->state_lock);
+		pthread_cond_destroy(&args->wake_cond);
 		fprintf(stderr, "Error: failed to init mutex or cond variable");
 		return (0);
 	}

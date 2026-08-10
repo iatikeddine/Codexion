@@ -33,6 +33,10 @@ void	one_coder(t_coder *coder)
 	long	time_to_burnout;
 
 	time_to_burnout = get_current_time() + coder->args->time_to_burnout;
+	pthread_mutex_lock(&coder->right_dongle->lock);
+	coder->right_dongle->is_available = 0;
+	pthread_mutex_unlock(&coder->right_dongle->lock);
+	print_status("has taken a dongle", coder);
 	while (get_current_time() < time_to_burnout)
 		usleep(1000);
 }

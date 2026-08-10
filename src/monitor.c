@@ -79,6 +79,9 @@ void	*routine_monitoring(void *arg)
 		}
 		if (check_required_compiles(args) == 0)
 		{
+			pthread_mutex_lock(&args->state_lock);
+			args->ending_point = 't';
+			pthread_mutex_unlock(&args->state_lock);
 			pthread_cond_broadcast(&args->wake_cond);
 			return (NULL);
 		}
