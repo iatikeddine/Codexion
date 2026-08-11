@@ -14,7 +14,7 @@ import argparse
 import subprocess
 import sys
 
-DEFAULT_ARGS = ["10", "605", "200", "100", "100", "10", "100", "fifo"]
+DEFAULT_ARGS = ["200", "1410", "100", "100", "100", "10", "600", "fifo"]
 BURNOUT_NEEDLE = "burned out"  # matched case-insensitively
 
 

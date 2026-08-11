@@ -66,6 +66,5 @@ void	drop_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 	dongle_2->cooldown = get_current_time() + coder->args->dongle_cooldown;
 	pthread_mutex_unlock(&dongle_2->lock);
 
-	pthread_cond_broadcast(&coder->args->wake_cond);
 	pthread_mutex_unlock(&coder->args->lock_sim);
 }
