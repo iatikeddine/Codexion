@@ -61,9 +61,8 @@ int	fill_input_data(t_arguments *args, char **argv)
 	args->dongle_cooldown = ft_atol(argv[7]);
 	if (args->number_of_coders == -1 || args->time_to_burnout == -1
 		|| args->time_to_compile == -1 || args->time_to_debug == -1
-		|| args->time_to_refactor == -1
-		|| args->number_of_compiles_required == -1
-		|| args->dongle_cooldown == -1)
+		|| args->time_to_refactor == -1 || args->dongle_cooldown == -1
+		|| args->number_of_compiles_required == -1)
 	{
 		fprintf(stderr, "Error: numbers must be lower than LONG_MAX\n");
 		return (0);
@@ -73,7 +72,10 @@ int	fill_input_data(t_arguments *args, char **argv)
 	else if (strcmp(argv[8], "edf") == 0)
 		args->scheduler = 'E';
 	else
-		return (fprintf(stderr, "Error: invalid scheduler type\n"), 0);
+	{
+		fprintf(stderr, "Error: invalid scheduler type\n");
+		return (0);
+	}
 	return (1);
 }
 
