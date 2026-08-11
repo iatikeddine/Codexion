@@ -26,6 +26,20 @@ static void	reserve_dongles(t_dongle *dongle_1, t_dongle *dongle_2,
 	pthread_mutex_unlock(&coder->args->lock_sim);
 }
 
+static void	lock_dongles(t_dongle *dongle_1, t_dongle *dongle_2)
+{
+	if (dongle_1->dongle_id > dongle_2->dongle_id)
+	{
+		pthread_mutex_lock(&dongle_1->lock);
+		pthread_mutex_lock(&dongle_2->lock);
+	}
+	else
+	{
+		pthread_mutex_lock(&dongle_2->lock);
+		pthread_mutex_lock(&dongle_1->lock);
+	}
+}
+
 int	take_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 {
 	pthread_mutex_lock(&coder->args->lock_sim);
@@ -38,8 +52,7 @@ int	take_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 	fill_requests(dongle_1, dongle_2, coder);
 	while (check_simulation(coder) == 0)
 	{
-		pthread_mutex_lock(&dongle_1->lock);
-		pthread_mutex_lock(&dongle_2->lock);
+		lock_dongles(dongle_1, dongle_2);
 		if (both_ready(dongle_1, dongle_2, coder) == 1)
 		{
 			reserve_dongles(dongle_1, dongle_2, coder);

@@ -33,7 +33,7 @@ static int	run_simulation(t_arguments *args)
 		pthread_mutex_lock(&args->state_lock);
 		args->ending_point = 't';
 		pthread_mutex_unlock(&args->state_lock);
-		pthread_cond_broadcast(&args->wake_cond);
+		broadcast(args);
 		join_threads(args);
 		return (clean_and_exit(args, 7,
 				"Error: failed to create monitor thread\n"));

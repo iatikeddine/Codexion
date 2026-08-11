@@ -27,7 +27,7 @@ int	threads_init(t_arguments *args)
 			pthread_mutex_lock(&args->state_lock);
 			args->ending_point = 't';
 			pthread_mutex_unlock(&args->state_lock);
-			pthread_cond_broadcast(&args->wake_cond);
+			broadcast(args);
 			while (--i >= 0)
 				pthread_join(args->coders[i].coder_thread, NULL);
 			return (0);

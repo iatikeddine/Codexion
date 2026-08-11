@@ -62,6 +62,13 @@ static int	check_required_compiles(t_arguments *args)
 	return (1);
 }
 
+void	broadcast(t_arguments *args)
+{
+	pthread_mutex_lock(&args->lock_sim);
+	pthread_cond_broadcast(&args->wake_cond);
+	pthread_mutex_unlock(&args->lock_sim);
+}
+
 void	*routine_monitoring(void *arg)
 {
 	t_arguments	*args;
@@ -71,15 +78,15 @@ void	*routine_monitoring(void *arg)
 	{
 		if (check_burnout(args) == 0)
 		{
-			pthread_cond_broadcast(&args->wake_cond);
+			broadcast(args);
 			return (NULL);
 		}
 		if (check_required_compiles(args) == 0)
 		{
-			pthread_cond_broadcast(&args->wake_cond);
+			broadcast(args);
 			return (NULL);
 		}
 		usleep(500);
-		pthread_cond_broadcast(&args->wake_cond);
+		broadcast(args);
 	}
 }

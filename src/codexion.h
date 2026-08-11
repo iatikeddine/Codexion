@@ -103,5 +103,6 @@ void	drop_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder);
 void	fill_requests(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder);
 void	one_coder(t_coder *coder);
 void	smart_sleep(long time_to_sleep, t_coder *coder);
+void	broadcast(t_arguments *args);
 
 #endif
