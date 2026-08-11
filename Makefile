@@ -2,7 +2,6 @@ NAME = codexion
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread
-INC = -I inc
 
 SRCS = src/main.c src/init.c src/routines.c src/actions.c \
        src/monitor.c src/queue.c src/utils.c src/sim_utils.c \
@@ -16,7 +15,7 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS)
