@@ -57,12 +57,21 @@ int	main(int argc, char **argv)
 			return (1);
 	}
 	else
-		return (fprintf(stderr, "Error: invalid number of arguments\n"), 2);
+	{
+		fprintf(stderr, "Error: invalid number of arguments\n");
+		return (2);
+	}
 	if (fill_input_data(&args, argv) == 0)
 		return (3);
 	if (args.number_of_coders < 1)
-		return (fprintf(stderr, "Error: 1 or more coders needed\n"), 4);
+	{
+		fprintf(stderr, "Error: 1 or more coders needed\n");
+		return (4);
+	}
 	if (sim_init(&args) == 0)
-		return (free_all(&args), 5);
+	{
+		free_all(&args);
+		return (5);
+	}
 	return (run_simulation(&args));
 }
