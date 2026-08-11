@@ -6,7 +6,7 @@
 /*   By: iatikedd <iatikedd@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 13:00:49 by iatikedd          #+#    #+#             */
-/*   Updated: 2026/07/20 13:00:50 by iatikedd         ###   ########.fr       */
+/*   Updated: 2026/08/11 11:52:37 by iatikedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,17 +71,11 @@ void	*routine_monitoring(void *arg)
 	{
 		if (check_burnout(args) == 0)
 		{
-			pthread_mutex_lock(&args->state_lock);
-			args->ending_point = 't';
-			pthread_mutex_unlock(&args->state_lock);
 			pthread_cond_broadcast(&args->wake_cond);
 			return (NULL);
 		}
 		if (check_required_compiles(args) == 0)
 		{
-			pthread_mutex_lock(&args->state_lock);
-			args->ending_point = 't';
-			pthread_mutex_unlock(&args->state_lock);
 			pthread_cond_broadcast(&args->wake_cond);
 			return (NULL);
 		}
