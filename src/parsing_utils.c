@@ -12,7 +12,7 @@
 
 #include "codexion.h"
 
-static int	check_minus_case(const char *num, int i)
+static int	check_minus_case(char *num, int i)
 {
 	while (num[i])
 	{
@@ -26,7 +26,7 @@ static int	check_minus_case(const char *num, int i)
 	return (1);
 }
 
-int	is_valid_number(const char *num)
+int	is_valid_number(char *num)
 {
 	size_t	i;
 

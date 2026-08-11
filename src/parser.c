@@ -29,7 +29,7 @@ static int	remove_white_space(int argc, char **argv)
 	return (1);
 }
 
-static long	ft_atol(const char *str)
+static long	ft_atol(char *str)
 {
 	int		i;
 	int		digit;

@@ -79,7 +79,7 @@ typedef struct s_dongle
 	pthread_mutex_t	lock;
 }	t_dongle;
 
-int		is_valid_number(const char *str);
+int		is_valid_number(char *str);
 int		str_trim(char **ptr);
 int		fill_input_data(t_arguments *args, char **argv);
 int		parse_args(int argc, char **argv);
