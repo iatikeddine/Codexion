@@ -12,7 +12,7 @@
 
 #include "codexion.h"
 
-void	reserve_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
+static void	reserve_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 {
 	dongle_1->is_available = 0;
 	dongle_2->is_available = 0;

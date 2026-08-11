@@ -90,6 +90,5 @@ int	parse_args(int argc, char **argv)
 			return (0);
 		i++;
 	}
-	to_lower(argv[8]);
 	return (1);
 }

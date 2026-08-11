@@ -46,19 +46,6 @@ int	is_valid_number(const char *num)
 	return (1);
 }
 
-void	to_lower(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] >= 'A' && str[i] <= 'Z')
-			str[i] += 32;
-		i++;
-	}
-}
-
 int	str_trim(char **ptr)
 {
 	int		i;

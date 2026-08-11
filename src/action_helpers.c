@@ -58,17 +58,3 @@ int	both_ready(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 		return (1);
 	return (0);
 }
-
-long	highest_cooldown(t_dongle *dongle_1, t_dongle *dongle_2)
-{
-	long	highest_cooldown;
-
-	if (dongle_1->cooldown > dongle_2->cooldown)
-		highest_cooldown = dongle_1->cooldown;
-	else if (dongle_1->cooldown < dongle_2->cooldown)
-		highest_cooldown = dongle_2->cooldown;
-	else
-		highest_cooldown = dongle_1->cooldown;
-
-	return (highest_cooldown);
-}

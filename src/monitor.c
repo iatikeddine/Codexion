@@ -12,7 +12,7 @@
 
 #include "codexion.h"
 
-int	check_burnout(t_arguments *args)
+static int	check_burnout(t_arguments *args)
 {
 	int		i;
 	long	last_compile_time;
@@ -35,7 +35,7 @@ int	check_burnout(t_arguments *args)
 	return (1);
 }
 
-int	check_required_compiles(t_arguments *args)
+static int	check_required_compiles(t_arguments *args)
 {
 	int		i;
 	int		count;
