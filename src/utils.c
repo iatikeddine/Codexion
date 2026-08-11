@@ -12,25 +12,6 @@
 
 #include "codexion.h"
 
-void	print_status(char *str, t_coder *coder)
-{
-	long	timestamp;
-
-	pthread_mutex_lock(&coder->args->print_lock);
-	pthread_mutex_lock(&coder->args->state_lock);
-	if (coder->args->ending_point == 't')
-	{
-		pthread_mutex_unlock(&coder->args->state_lock);
-		pthread_mutex_unlock(&coder->args->print_lock);
-		return ;
-	}
-	if (strcmp(str, "burned out") == 0)
-		coder->args->ending_point = 't';
-	pthread_mutex_unlock(&coder->args->state_lock);
-	timestamp = get_current_time() - coder->args->starting_time;
-	printf("%ld %d %s\n", timestamp, coder->coder_id, str);
-	pthread_mutex_unlock(&coder->args->print_lock);
-}
 
 long	get_current_time(void)
 {
@@ -58,43 +39,23 @@ void	destroy_mutexes(t_arguments *args)
 	}
 }
 
-int	threads_init(t_arguments *args)
+void	free_all(t_arguments *args)
 {
-	int	i;
-
-	i = 0;
-	while (i < args->number_of_coders)
-	{
-		args->coders[i].last_compile_time = args->starting_time;
-		if (pthread_create(&args->coders[i].coder_thread, NULL, routine,
-				&args->coders[i]) != 0)
-		{
-			fprintf(stderr, "Error: failed to create coder thread\n");
-			pthread_mutex_lock(&args->state_lock);
-			args->ending_point = 't';
-			pthread_mutex_unlock(&args->state_lock);
-			while (--i >= 0)
-				pthread_join(args->coders[i].coder_thread, NULL);
-			return (0);
-		}
-		i++;
-	}
-	return (1);
+	if (args->coders)
+		free(args->coders);
+	if (args->dongles)
+		free(args->dongles);
 }
 
-int	join_threads(t_arguments *args)
+void	smart_sleep(long time_to_sleep, t_coder *coder)
 {
-	int	i;
+	long	sleep_deadline;
 
-	i = 0;
-	while (i < args->number_of_coders)
+	sleep_deadline = get_current_time() + time_to_sleep;
+	while (get_current_time() < sleep_deadline)
 	{
-		if (pthread_join(args->coders[i].coder_thread, NULL) != 0)
-		{
-			fprintf(stderr, "Error: failed to join thread\n");
-			return (0);
-		}
-		i++;
+		if (check_simulation(coder) == 1)
+			return ;
+		usleep(500);
 	}
-	return (1);
 }
