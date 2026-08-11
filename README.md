@@ -1,65 +1,68 @@
 *This project has been created as part of the 42 curriculum by iatikedd.*
 
-## Description
-Codexion is a concurrency and multi-threading simulation written in C, inspired by the classic Dining Philosophers problem but with a modern collaborative coding twist. The goal of this project is to orchestrate multiple coders competing for limited USB dongles using POSIX threads, mutexes, and smart scheduling without encountering deadlocks, data races, or starvation (burnout). 
+# Codexion
 
-Coders sit in a circular hub around a shared Quantum Compiler. They alternate between three states: compiling, debugging, and refactoring. To compile, a coder requires two USB dongles. The program accurately models strict timing, resource limitations, and custom scheduling arbitrations (FIFO and EDF) to ensure fair access.
+## Description
+**Codexion** is a multi-threading simulation project where multiple coders compete for limited resources (dongles) to compile their quantum code. The project models a scenario where coders sit at a circular table and must alternate between compiling, debugging, and refactoring. The core challenge is to ensure fair resource allocation, prevent data races, and guarantee that no coder "burns out" due to starvation or deadlocks. 
+
+The simulation supports two scheduling policies:
+- **FIFO (First In, First Out)**: Grants dongle access based on arrival order.
+- **EDF (Earliest Deadline First)**: Grants dongle access based on the coder closest to burning out.
 
 ## Instructions
 
 ### Compilation
-The project includes a `Makefile` that compiles the source files using `cc` with the required flags (`-Wall -Wextra -Werror -pthread`).
-To compile the project, run:
-```bash
-make
-```
-Other available rules:
+A `Makefile` is provided to compile the project. You can compile the program using the following commands:
+- `make` or `make all`: Compiles the `codexion` executable.
 - `make clean`: Removes object files.
 - `make fclean`: Removes object files and the executable.
 - `make re`: Recompiles the entire project.
 
 ### Execution
-Run the executable with the following mandatory arguments:
+Run the compiled executable with the following mandatory arguments:
 ```bash
-./codexion [number_of_coders] [time_to_burnout] [time_to_compile] [time_to_debug] [time_to_refactor] [number_of_compiles_required] [dongle_cooldown] [scheduler]
+./codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
 ```
-- **number_of_coders**: The number of coders and dongles.
-- **time_to_burnout**: Milliseconds a coder can wait since the start of their last compile before burning out.
-- **time_to_compile**: Milliseconds spent compiling (requires 2 dongles).
-- **time_to_debug**: Milliseconds spent debugging.
-- **time_to_refactor**: Milliseconds spent refactoring.
-- **number_of_compiles_required**: Simulation stops if all coders compile this many times.
-- **dongle_cooldown**: Milliseconds a dongle remains unavailable after being released.
-- **scheduler**: Arbitration policy, either `fifo` or `edf`.
 
-Example:
+**Arguments Explanation:**
+- `number_of_coders`: Number of coders (and number of dongles).
+- `time_to_burnout`: Milliseconds a coder can go without compiling before they burn out.
+- `time_to_compile`: Milliseconds spent compiling (requires two dongles).
+- `time_to_debug`: Milliseconds spent debugging.
+- `time_to_refactor`: Milliseconds spent refactoring.
+- `number_of_compiles_required`: Number of times all coders must compile for the simulation to end successfully.
+- `dongle_cooldown`: Milliseconds a dongle must cool down after being released.
+- `scheduler`: The arbitration policy, either `fifo` or `edf`.
+
+**Example:**
 ```bash
-./codexion 100 1000 200 100 100 5 100 fifo
+./codexion 6 800 200 200 200 7 100 fifo
 ```
 
 ## Blocking cases handled
+This project tackles several critical concurrency issues to guarantee liveness and stability:
 
-Our solution robustly manages several advanced concurrency challenges:
-- **Deadlock prevention (Coffman's conditions):** Deadlocks are structurally prevented by implementing an asymmetrical acquisition strategy. Even-numbered coders request their right dongle first, then left; odd-numbered coders request their left dongle first, then right. This breaks the circular wait condition.
-- **Starvation prevention:** To prevent an initial race condition where a coder might hold one dongle hostage while waiting for a second (causing their neighbor to starve), an initial sub-millisecond delay (`usleep(15000)`) is introduced for even coders. This enforces a perfectly alternating desynchronized rhythm.
-- **Cooldown handling:** Dongles enforce a mandatory cooldown period upon release. Coders attempting to acquire a cooling dongle are placed into a conditional wait queue (`pthread_cond_timedwait`) until the cooldown timestamp perfectly expires.
-- **Precise burnout detection:** A dedicated monitor thread runs independently, periodically checking every coder's `last_compile_time`. CPU hogging is avoided with a micro-sleep (`usleep(1000)`), yielding execution back to the OS scheduler and ensuring burnout logs print within the strict 10ms tolerance.
-- **Log serialization:** The standard output is protected by a dedicated `print_lock` mutex to guarantee that log messages from highly concurrent threads never interleave, tear, or print out of sequence. Moreover, logs are checked against the simulation's `ending_point` flag to strictly prevent any logs from printing after a burnout event occurs.
+- **Deadlock Prevention (Circular Wait)**: Deadlocks are entirely prevented by utilizing a global gatekeeper mutex (lock_sim). Before any coder can attempt to acquire their left and right dongles, they must first hold the lock_sim mutex.
+- **Starvation Prevention**: Fair access to dongles is enforced through a strict queue-based scheduling mechanism. Depending on the `scheduler` argument, dongle access is granted strictly in `fifo` (arrival time) or `edf` (earliest deadline first) order, ensuring no coder is left waiting indefinitely.
+- **Cooldown Handling**: Every dongle has an `is_available` state and a `cooldown` timestamp. When a dongle is dropped, its cooldown timestamp is updated. The scheduling condition (`both_ready`) strictly checks the current time against the cooldown timestamp before a dongle can be reacquired.
+- **Precise Burnout Detection**: A dedicated monitor thread runs independently of the coders, constantly checking the `last_compile_time` of each coder. When a burnout is detected, the monitor sets a global state flag and broadcasts to all sleeping threads to shut down the simulation gracefully within the required 10ms tolerance.
+- **Log Serialization**: Console output is protected by a dedicated `print_lock` mutex to ensure that state change messages never interleave or overlap on the terminal.
 
 ## Thread synchronization mechanisms
 
-The project leverages POSIX threading primitives to coordinate access to shared resources efficiently:
-- **`pthread_mutex_t`**: Used to ensure mutual exclusion. There is one mutex per dongle to prevent concurrent access by neighboring coders. Global mutexes (`state_lock` and `print_lock`) are used to protect read/write operations on shared state variables (like the `ending_point` flag and compile counts) and the standard output.
-- **`pthread_cond_t`**: Condition variables manage custom wait queues for each dongle. When a coder requests a busy or cooling dongle, they call `pthread_cond_wait` (or `pthread_cond_timedwait` for cooldowns). When a coder drops a dongle, they call `pthread_cond_broadcast` to cleanly wake up queued threads.
-- **Custom Arbitration (FIFO/EDF)**: A priority queue structure dictates the order in which waiting threads receive dongles. Condition variables are wrapped in a `while` loop that checks the `is_available` flag and ensures only the thread currently at the front of the queue (`requests[0]`) is allowed to break the loop and lock the dongle.
-- **Thread-safe communication**: Coders do not communicate directly with each other or the monitor. The monitor thread safely observes the simulation status by acquiring the `state_lock`, copying the values (like `last_compile_time`), and releasing the lock immediately to minimize contention. If a burnout is detected, the monitor sets `ending_point = 't'` under the lock, which safely signals all coder threads to gracefully exit their loops.
+This implementation relies on POSIX threads (`pthread`) and synchronization primitives:
+
+- **Threads (`pthread_create`)**: Each coder runs in its own independent thread to simulate parallel execution, alongside a single monitor thread that supervises their health.
+- **Mutexes (`pthread_mutex_t`)**: 
+  - **Dongle Locks**: Each dongle has its own mutex to protect its priority queue, availability state, and cooldown timestamp.
+  - **State Lock (`state_lock`)**: Protects global shared data, such as the simulation ending flag and the last compile timestamps of coders, to prevent data races during burnout checks.
+  - **Print Lock (`print_lock`)**: Guarantees mutually exclusive access to `stdout` for clean, serialized logging.
+  - **Simulation Lock (`lock_sim`)**: Acts as a coarse-grained gatekeeper to ensure acquisition of dongles and safe condition variable waiting.
+- **Condition Variables (`pthread_cond_t`)**: 
+  - A central `wake_cond` condition variable is used to make coders sleep (`pthread_cond_wait`) while they are waiting for dongles. When dongles are released or when the monitor detects a burnout, a `pthread_cond_broadcast` is signaled, instantly waking up all waiting threads to re-evaluate their state or exit cleanly.
 
 ## Resources
-- [POSIX Threads Programming (LLNL)](https://hpc-tutorials.llnl.gov/posix/)
-- [Dining Philosophers Problem (Wikipedia)](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
-- [Mutexes and Condition Variables](https://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf)
-
-**AI Usage:** 
-AI (Google DeepMind Antigravity) was used extensively in a pair-programming setup to assist with:
-- **Concurrency debugging**: Identifying and patching highly complex starvation scenarios and deadlocks (e.g., analyzing the "hostage dongle" livelock condition with `edf` and `fifo`).
-- **Norm compliance**: Restructuring `main.c` and `monitor.c` to adhere to the strict 42 Norminette 25-line function limit without sacrificing logic readability.
+- **Classic References**:
+  - Unix threads in C by CodeVault (https://www.youtube.com/watch?v=d9s_d28yJq0&list=PLfqABt5AS4FmuQf70psXrsMLEDQXNkLq2)
+  - multithreading necessary function from (https://man7.org)
+- **AI Usage**: AI was utilized as a assistant to resolve strict formatting requirements (Norminette compliance), and for in depth explination of multithreading concepts.
