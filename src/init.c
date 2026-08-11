@@ -77,17 +77,22 @@ static void	*allocate_mem(size_t size)
 static int	init_mutexes(t_arguments *args)
 {
 	if (pthread_mutex_init(&args->print_lock, NULL) != 0)
-		return (fprintf(stderr, "Error: failed to init mutex"), 0);
+	{
+		fprintf(stderr, "Error: failed to init mutex\n");
+		return (0);
+	}
 	if (pthread_mutex_init(&args->state_lock, NULL) != 0)
 	{
 		pthread_mutex_destroy(&args->print_lock);
-		return (fprintf(stderr, "Error: failed to init mutex"), 0);
+		fprintf(stderr, "Error: failed to init mutex\n");
+		return (0);
 	}
 	if (pthread_mutex_init(&args->lock_sim, NULL) != 0)
 	{
 		pthread_mutex_destroy(&args->print_lock);
 		pthread_mutex_destroy(&args->state_lock);
-		return (fprintf(stderr, "Error: failed to init mutex"), 0);
+		fprintf(stderr, "Error: failed to init mutex\n");
+		return (0);
 	}
 	return (1);
 }
@@ -95,16 +100,14 @@ static int	init_mutexes(t_arguments *args)
 int	sim_init(t_arguments *args)
 {
 	args->ending_point = 'f';
-	args->coders = (allocate_mem(sizeof(t_coder)
-				* args->number_of_coders));
+	args->coders = (allocate_mem(sizeof(t_coder) * args->number_of_coders));
 	if (args->coders == NULL)
-		return (fprintf(stderr, "Error: failed to allocate memory\n"), 0);
-	args->dongles = (allocate_mem(sizeof(t_dongle)
-				* args->number_of_coders));
+		return (0);
+	args->dongles = (allocate_mem(sizeof(t_dongle) * args->number_of_coders));
 	if (args->dongles == NULL)
-		return (fprintf(stderr, "Error: failed to allocate memory\n"), 0);
+		return (0);
 	if (pthread_cond_init(&args->wake_cond, NULL) != 0)
-		return (fprintf(stderr, "Error: failed to init cond variable"), 0);
+		return (fprintf(stderr, "Error: failed to init cond variable\n"), 0);
 	if (init_mutexes(args) == 0)
 	{
 		pthread_cond_destroy(&args->wake_cond);
@@ -116,7 +119,7 @@ int	sim_init(t_arguments *args)
 		pthread_mutex_destroy(&args->state_lock);
 		pthread_mutex_destroy(&args->lock_sim);
 		pthread_cond_destroy(&args->wake_cond);
-		fprintf(stderr, "Error: failed to init mutex or cond variable");
+		fprintf(stderr, "Error: failed to init mutex\n");
 		return (0);
 	}
 	coders_init(args);
