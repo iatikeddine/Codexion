@@ -18,7 +18,7 @@ static int	compiling(t_coder *coder)
 		return 0;
 	change_status(coder);
 	drop_dongles(coder->right_dongle, coder->left_dongle, coder);
-	return 1;
+	return (1);
 }
 
 static void	debugging(t_coder *coder)

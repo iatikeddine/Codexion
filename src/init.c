@@ -107,7 +107,10 @@ int	sim_init(t_arguments *args)
 	if (args->dongles == NULL)
 		return (0);
 	if (pthread_cond_init(&args->wake_cond, NULL) != 0)
-		return (fprintf(stderr, "Error: failed to init cond variable\n"), 0);
+	{
+		fprintf(stderr, "Error: failed to init cond variable\n");
+		return (0);
+	}
 	if (init_mutexes(args) == 0)
 	{
 		pthread_cond_destroy(&args->wake_cond);

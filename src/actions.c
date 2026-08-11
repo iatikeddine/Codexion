@@ -42,7 +42,7 @@ int	take_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 		if (both_ready(dongle_1, dongle_2, coder) == 1)
 		{
 			reserve_dongles(dongle_1, dongle_2, coder);
-			return 1;
+			return (1);
 		}
 		pthread_mutex_unlock(&dongle_2->lock);
 		pthread_mutex_unlock(&dongle_1->lock);
