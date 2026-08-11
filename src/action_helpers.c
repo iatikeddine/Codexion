@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "codexion.h"
+#include "codexion.h"
 
 static void	fill_request(t_request *request, t_coder *coder)
 {
@@ -26,14 +26,12 @@ static void	fill_request(t_request *request, t_coder *coder)
 
 void	fill_requests(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 {
-
 	t_request	request;
 
 	pthread_mutex_lock(&dongle_1->lock);
 	fill_request(&request, coder);
 	push_request(&dongle_1->queue, request, coder->args->scheduler);
 	pthread_mutex_unlock(&dongle_1->lock);
-
 	pthread_mutex_lock(&dongle_2->lock);
 	fill_request(&request, coder);
 	push_request(&dongle_2->queue, request, coder->args->scheduler);
@@ -59,13 +57,11 @@ int	both_ready(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 	int	right_ready;
 
 	left_ready = (dongle_1->is_available
-		&& dongle_1->queue.requests[0].coder == coder
-		&& get_current_time() >= dongle_1->cooldown);
-
-	right_ready = (dongle_2->is_available &&
-		dongle_2->queue.requests[0].coder == coder
-		&& get_current_time() >= dongle_2->cooldown);
-	
+			&& dongle_1->queue.requests[0].coder == coder
+			&& get_current_time() >= dongle_1->cooldown);
+	right_ready = (dongle_2->is_available
+			&& dongle_2->queue.requests[0].coder == coder
+			&& get_current_time() >= dongle_2->cooldown);
 	if (right_ready && left_ready)
 		return (1);
 	return (0);

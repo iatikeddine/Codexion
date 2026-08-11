@@ -15,7 +15,7 @@
 static int	compiling(t_coder *coder)
 {
 	if (take_dongles(coder->right_dongle, coder->left_dongle, coder) == 0)
-		return 0;
+		return (0);
 	change_status(coder);
 	drop_dongles(coder->right_dongle, coder->left_dongle, coder);
 	return (1);
@@ -44,7 +44,7 @@ void	*routine(void *arg)
 		smart_sleep(sleep / 3, coder);
 	while (check_simulation(coder) == 0)
 	{
-		if(compiling(coder) == 0)
+		if (compiling(coder) == 0)
 			return (NULL);
 		if (check_simulation(coder) == 1)
 			return (NULL);

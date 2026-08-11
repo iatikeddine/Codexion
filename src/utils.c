@@ -12,7 +12,6 @@
 
 #include "codexion.h"
 
-
 long	get_current_time(void)
 {
 	long			current_time;

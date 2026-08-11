@@ -12,7 +12,8 @@
 
 #include "codexion.h"
 
-static void	reserve_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
+static void	reserve_dongles(t_dongle *dongle_1, t_dongle *dongle_2,
+		t_coder *coder)
 {
 	dongle_1->is_available = 0;
 	dongle_2->is_available = 0;
@@ -55,16 +56,13 @@ int	take_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 void	drop_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 {
 	pthread_mutex_lock(&coder->args->lock_sim);
-
 	pthread_mutex_lock(&dongle_1->lock);
 	dongle_1->is_available = 1;
 	dongle_1->cooldown = get_current_time() + coder->args->dongle_cooldown;
 	pthread_mutex_unlock(&dongle_1->lock);
-
 	pthread_mutex_lock(&dongle_2->lock);
 	dongle_2->is_available = 1;
 	dongle_2->cooldown = get_current_time() + coder->args->dongle_cooldown;
 	pthread_mutex_unlock(&dongle_2->lock);
-
 	pthread_mutex_unlock(&coder->args->lock_sim);
 }
