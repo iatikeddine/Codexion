@@ -21,6 +21,19 @@ int	is_valid_number(const char *num)
 		return (0);
 	if (num[0] == '+' && num[1] != '\0')
 		i++;
+	else if (num[0] == '-' && num[1] != '\0')
+	{
+		i++;
+		while (num[i])
+		{
+			if (num[i] != '0')
+			{
+				fprintf(stderr, "Error: Invalid negative argument\n");
+				return (0);
+			}
+			i++;
+		}
+	}
 	while (num[i] != '\0')
 	{
 		if (num[i] < '0' || num[i] > '9')
