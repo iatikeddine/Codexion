@@ -12,6 +12,20 @@
 
 #include "codexion.h"
 
+static int	check_minus_case(const char *num, int i)
+{
+	while (num[i])
+	{
+		if (num[i] != '0')
+		{
+			fprintf(stderr, "Error: Invalid negative argument\n");
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}
+
 int	is_valid_number(const char *num)
 {
 	size_t	i;
@@ -24,15 +38,8 @@ int	is_valid_number(const char *num)
 	else if (num[0] == '-' && num[1] != '\0')
 	{
 		i++;
-		while (num[i])
-		{
-			if (num[i] != '0')
-			{
-				fprintf(stderr, "Error: Invalid negative argument\n");
-				return (0);
-			}
-			i++;
-		}
+		if (check_minus_case(num, i) == 0)
+			return (0);
 	}
 	while (num[i] != '\0')
 	{

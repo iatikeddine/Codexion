@@ -58,3 +58,10 @@ void	smart_sleep(long time_to_sleep, t_coder *coder)
 		usleep(500);
 	}
 }
+
+int	print_and_exit(char *error_msg, int code)
+{
+	if (error_msg)
+		fprintf(stderr, "%s", error_msg);
+	return (code);
+}

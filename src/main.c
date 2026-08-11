@@ -58,17 +58,11 @@ int	main(int argc, char **argv)
 			return (1);
 	}
 	else
-	{
-		fprintf(stderr, "Error: invalid number of arguments\n");
-		return (2);
-	}
+		return (print_and_exit("Error: invalid number of arguments\n", 2));
 	if (fill_input_data(&args, argv) == 0)
 		return (3);
 	if (args.number_of_coders < 1)
-	{
-		fprintf(stderr, "Error: 1 or more coders needed\n");
-		return (4);
-	}
+		return (print_and_exit("Error: 1 or more coders needed\n", 4));
 	if (sim_init(&args) == 0)
 	{
 		free_all(&args);

@@ -89,6 +89,7 @@ int		join_threads(t_arguments *args);
 int		check_simulation(t_coder *coder);
 int		take_dongles(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder);
 int		both_ready(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder);
+int		print_and_exit(char *error_msg, int code);
 long	get_current_time(void);
 void	push_request(t_heap *queue, t_request req, char scheduler_type);
 void	pop_request(t_heap *queue);
