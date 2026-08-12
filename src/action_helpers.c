@@ -17,7 +17,7 @@ static void	fill_request(t_request *request, t_coder *coder)
 	long	time_to_burnout;
 
 	pthread_mutex_lock(&coder->args->state_lock);
-	time_to_burnout = coder->args->time_to_burnout + coder->last_compile_time;
+	time_to_burnout = coder->last_compile_time;
 	pthread_mutex_unlock(&coder->args->state_lock);
 	request->time_left_to_burnout = time_to_burnout;
 	request->arrival_time = get_current_time();
@@ -28,12 +28,12 @@ void	fill_requests(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 {
 	t_request	request;
 
-	pthread_mutex_lock(&dongle_1->lock);
 	fill_request(&request, coder);
+	pthread_mutex_lock(&dongle_1->lock);
 	push_request(&dongle_1->queue, request, coder->args->scheduler);
 	pthread_mutex_unlock(&dongle_1->lock);
+
 	pthread_mutex_lock(&dongle_2->lock);
-	fill_request(&request, coder);
 	push_request(&dongle_2->queue, request, coder->args->scheduler);
 	pthread_mutex_unlock(&dongle_2->lock);
 }
