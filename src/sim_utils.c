@@ -23,13 +23,13 @@ int	threads_init(t_arguments *args)
 		if (pthread_create(&args->coders[i].coder_thread, NULL, routine,
 				&args->coders[i]) != 0)
 		{
-			fprintf(stderr, "Error: failed to create coder thread\n");
 			pthread_mutex_lock(&args->state_lock);
 			args->ending_point = 't';
 			pthread_mutex_unlock(&args->state_lock);
 			broadcast(args);
 			while (--i >= 0)
 				pthread_join(args->coders[i].coder_thread, NULL);
+			fprintf(stderr, "Error: failed to create coder thread\n");
 			return (0);
 		}
 		i++;

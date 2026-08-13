@@ -32,7 +32,6 @@ void	fill_requests(t_dongle *dongle_1, t_dongle *dongle_2, t_coder *coder)
 	pthread_mutex_lock(&dongle_1->lock);
 	push_request(&dongle_1->queue, request, coder->args->scheduler);
 	pthread_mutex_unlock(&dongle_1->lock);
-
 	pthread_mutex_lock(&dongle_2->lock);
 	push_request(&dongle_2->queue, request, coder->args->scheduler);
 	pthread_mutex_unlock(&dongle_2->lock);
